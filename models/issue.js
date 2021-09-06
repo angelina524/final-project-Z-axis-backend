@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Issue.belongsTo(models.User, {
         foreignKey: 'userId'
       })
-      Issue.hasMany(Issue_Guest_Comment)
+      Issue.hasMany(models.Issue_Guest_Comment)
     }
   };
   Issue.init({

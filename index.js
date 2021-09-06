@@ -3,6 +3,9 @@ const session = require('express-session')
 const flash = require('connect-flash')
 const path = require('path')
 
+const userController = require('./controllers/user')
+const issueController = require('./controllers/issue')
+
 const app = express()
 const port = process.env.PORT || 5001
 
@@ -15,8 +18,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }))
-
-const userController = require('./controllers/user')
 
 function checkAdminPermission(req, res, next) {
 
