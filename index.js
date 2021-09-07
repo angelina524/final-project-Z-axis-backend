@@ -2,16 +2,22 @@ const express = require('express')
 const session = require('express-session')
 const flash = require('connect-flash')
 const path = require('path')
+const dotenv = require('dotenv')
 
 const app = express()
-const port = process.env.PORT || 5001
+const result = dotenv.config()
+if (result.error) {
+  throw result.error
+}
+const { PORT, SECRET } = result.parsed
+const port = PORT || 5001
 
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(flash())
 app.use(session({
-  secret: 'keyboard cat',
+  secret: SECRET,
   resave: false,
   saveUninitialized: true
 }))
