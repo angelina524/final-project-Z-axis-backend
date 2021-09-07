@@ -1,2 +1,10 @@
-node_modules
-config
+node_modules/
+config/
+
+# setiing
+.vscode
+yarn.lock
+pnpm-lock.yaml
+
+# env variables
+.env
