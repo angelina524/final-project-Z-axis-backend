@@ -61,6 +61,7 @@ const commentController = {
   editReply: async (req, res) => {
     const { reply } = req.body
     const { id } = req.params
+    // todo: error handling
     const response = await Comment.update(
       {
         reply,
@@ -76,6 +77,7 @@ const commentController = {
   },
   getAllReplies: async (req, res) => {
     const { id } = req.params
+    // todo: error handling
     const replies = await Comment.findAll({
       where: {
         issueId: Number(id),
