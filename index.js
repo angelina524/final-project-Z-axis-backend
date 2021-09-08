@@ -4,6 +4,7 @@ const flash = require('connect-flash')
 const path = require('path')
 const dotenv = require('dotenv')
 
+const { errorHandler } = require('./middlewares/error')
 const userController = require('./controllers/user')
 const issueController = require('./controllers/issue')
 
@@ -25,19 +26,17 @@ app.use(session({
   saveUninitialized: true
 }))
 
-function checkAdminPermission(req, res, next) {
+const userController = require('./controllers/user')
 
-}
+app.use(errorHandler)
 
 // user
 app.post('/users/register', userController.register)
 app.post('/users/login', userController.login)
 app.get('/users/me', userController.getOneProfile)
 app.patch('/users/me', userController.editProfile)
+app.patch('/users/updatePassword', userController.updatePassword)
 
-// user need admin permission
-app.get('/users', checkAdminPermission, userController.getAllUsers)
-app.get('/search', checkAdminPermission, userController.getOneUser)
 
 // issue path
 app.post('/issues', issueController.add)
