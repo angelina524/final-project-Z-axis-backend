@@ -15,7 +15,7 @@ const emailToJwtToken = (email) => {
 }
 
 const JwtTokenToEmail = (token) => {
-  const payload = jwt.verify(token, secretOrPublicKey)
+  const payload = jwt.verify(token, JWT_SECRET_KEY)
   if (!payload.email) return false
   return payload.email
 }
