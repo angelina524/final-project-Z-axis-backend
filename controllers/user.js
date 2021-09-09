@@ -27,8 +27,6 @@ const userController = {
     const { nickname, email, password } = req.body
     if (!nickname || !email || !password) throw MissingError
     if (!isEmailFormatValid(email)) throw new GeneralError('信箱格式錯誤')
-    const checkEmail = await User.findOne({ where: { email } })
-    if (checkEmail) throw new GeneralError('此信箱已存在')
     if (!isPasswordFormatValid(password)) throw new GeneralError('密碼格式錯誤，長度需為 8 以上並包含小寫英文字母、數字')
     const hash = await bcrypt.hash(password, SALTROUNDS)
     const token = await emailToJwtToken(email)
