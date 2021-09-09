@@ -4,6 +4,7 @@ const flash = require('connect-flash')
 const path = require('path')
 const dotenv = require('dotenv')
 
+const { errorHandler } = require('./middlewares/error')
 const userController = require('./controllers/user')
 const issueController = require('./controllers/issue')
 const commentController = require('./controllers/comment')
@@ -26,17 +27,12 @@ app.use(session({
   saveUninitialized: true
 }))
 
-function checkAdminPermission(req, res, next) {}
-
 // user
 app.post('/users/register', userController.register)
 app.post('/users/login', userController.login)
 app.get('/users/me', userController.getOneProfile)
 app.patch('/users/me', userController.editProfile)
-
-// user need admin permission
-app.get('/users', checkAdminPermission, userController.getAllUsers)
-app.get('/search', checkAdminPermission, userController.getOneUser)
+app.patch('/users/updatePassword', userController.updatePassword)
 
 // issue path
 app.post('/issues', issueController.add)
@@ -54,6 +50,8 @@ app.get('/comments/:id', commentController.getOneComment)
 // reply path
 app.patch('/comments/:id/replies', commentController.editReply)
 app.get('/issues/:id/replies', commentController.getAllReplies)
+
+app.use(errorHandler)
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)

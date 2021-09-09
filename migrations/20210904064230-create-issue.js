@@ -9,16 +9,24 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       title: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(255),
+        allowNull: false,
       },
       description: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       beginTime: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
       },
       finishTime: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: false,
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0,
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

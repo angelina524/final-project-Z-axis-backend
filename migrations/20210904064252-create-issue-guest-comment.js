@@ -9,16 +9,22 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       nickname: {
-        type: Sequelize.STRING(32)
+        type: Sequelize.STRING(32),
+        allowNull: false,
       },
       content: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       likesNum: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
       },
       isResolved: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0,
+        allowNull: false,
       },
       reply: {
         type: Sequelize.TEXT

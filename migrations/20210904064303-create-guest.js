@@ -9,7 +9,8 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       guestToken: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(255),
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,

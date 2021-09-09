@@ -9,16 +9,28 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       nickname: {
-        type: Sequelize.STRING(32)
+        type: Sequelize.STRING(32),
+        allowNull: false,
       },
       email: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(255),
+        allowNull: false,
+        unique: {
+          msg: '此信箱已存在',
+        },
       },
       password: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(255),
+        allowNull: false,
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: 0,
+        allowNull: false,
       },
       userToken: {
-        type: Sequelize.STRING(255)
+        type: Sequelize.STRING(255),
+        allowNull: false,
       },
       createdAt: {
         allowNull: false,
