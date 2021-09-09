@@ -26,8 +26,7 @@ const issueController = {
     Issue.findOne().then((issue) => {
       // TODO
     })
-  },
-
+  }
 }
 
 module.exports = issueController

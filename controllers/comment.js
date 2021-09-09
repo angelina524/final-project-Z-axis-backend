@@ -12,7 +12,7 @@ const commentController = {
       nickname,
       content,
       issueId: Number(id),
-      guestToken,
+      guestToken
     })
     res.send({ comment })
   },
@@ -21,8 +21,8 @@ const commentController = {
     // todo: error handling
     await Comment.destroy({
       where: {
-        id: Number(id),
-      },
+        id: Number(id)
+      }
     })
     res.send('deleteComment')
   },
@@ -33,12 +33,12 @@ const commentController = {
     const response = await Comment.update(
       {
         nickname,
-        content,
+        content
       },
       {
         where: {
-          id: Number(id),
-        },
+          id: Number(id)
+        }
       }
     )
     res.send({ response })
@@ -53,8 +53,8 @@ const commentController = {
     // todo: error handling
     const comment = await Comment.findOne({
       where: {
-        id: Number(id),
-      },
+        id: Number(id)
+      }
     })
     res.send({ comment })
   },
@@ -65,12 +65,12 @@ const commentController = {
     const response = await Comment.update(
       {
         reply,
-        replyCreateAt: new Date(),
+        replyCreateAt: new Date()
       },
       {
         where: {
-          id: Number(id),
-        },
+          id: Number(id)
+        }
       }
     )
     res.send({ response })
@@ -80,12 +80,12 @@ const commentController = {
     // todo: error handling
     const replies = await Comment.findAll({
       where: {
-        issueId: Number(id),
+        issueId: Number(id)
       },
-      attributes: ['reply', 'replyCreateAt'],
+      attributes: ['reply', 'replyCreateAt']
     })
     res.send({ replies })
-  },
+  }
 }
 
 module.exports = commentController

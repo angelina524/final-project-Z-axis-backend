@@ -9,7 +9,7 @@ const { JWT_SECRET_KEY } = result.parsed
 
 const emailToJwtToken = (email) => {
   const payload = {
-    email,
+    email
   }
   return jwt.sign(payload, JWT_SECRET_KEY)
 }
@@ -20,7 +20,4 @@ const JwtTokenToEmail = (token) => {
   return payload.email
 }
 
-export {
-  emailToJwtToken,
-  JwtTokenToEmail
-}
+export { emailToJwtToken, JwtTokenToEmail }
