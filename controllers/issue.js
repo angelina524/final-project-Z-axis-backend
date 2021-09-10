@@ -37,7 +37,7 @@ const issueController = {
       userId
     })
     if (!issue) throw new GeneralError('新增失敗')
-    res.send({ ok: 1, message: '新增成功', issue })
+    res.status(200).json({ ok: 1, message: '新增成功', issue })
   },
 
   delete: async (req, res) => {
@@ -105,14 +105,14 @@ const issueController = {
   getOne: async (req, res) => {
     const userId = await this.getUserId(req)
     const { id } = req.params
-    const singleIssue = await Issue.findOne({
+    const issue = await Issue.findOne({
       where: {
         id: Number(id),
         userId: Number(userId)
       }
     })
-    if (!singleIssue) throw new NotFound('找不到題問')
-    res.status(200).json({ ok: 1, singleIssue })
+    if (!issue) throw new NotFound('找不到題問')
+    res.status(200).json({ ok: 1, issue })
   }
 }
 
