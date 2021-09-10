@@ -20,4 +20,4 @@ const JwtTokenToEmail = (token) => {
   return payload.email
 }
 
-export { emailToJwtToken, JwtTokenToEmail }
+module.exports = { emailToJwtToken, JwtTokenToEmail }
