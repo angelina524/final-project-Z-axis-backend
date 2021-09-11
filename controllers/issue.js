@@ -21,6 +21,7 @@ const issueController = {
   },
 
   delete: async (req, res) => {
+    const userId = await getUserId(res)
     const { id } = req.params
     await Issue.update(
       {
@@ -28,6 +29,7 @@ const issueController = {
       },
       {
         where: {
+          userId,
           id: Number(id),
           isDeleted: 0
         }
@@ -40,6 +42,7 @@ const issueController = {
   },
 
   patch: async (req, res) => {
+    const userId = await getUserId(res)
     const { title, description, beginTime, finishTime } = req.body
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
@@ -53,6 +56,7 @@ const issueController = {
       },
       {
         where: {
+          userId,
           id: Number(id),
           isDeleted: 0
         }
@@ -67,10 +71,10 @@ const issueController = {
   },
 
   getAll: async (req, res) => {
-    const userId = await getUserId(req)
+    const userId = await getUserId(res)
     const issues = await Issue.findAll({
       where: {
-        userId: Number(userId),
+        userId,
         isDeleted: 0
       }
     })
@@ -82,10 +86,12 @@ const issueController = {
   },
 
   getOne: async (req, res) => {
+    const userId = await getUserId(res)
     const { id } = req.params
     const issue = await Issue.findOne({
       where: {
         id: Number(id),
+        userId,
         isDeleted: 0
       }
     })
