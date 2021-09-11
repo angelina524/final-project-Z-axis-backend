@@ -24,7 +24,7 @@ const issueController = {
     const { id } = req.params
     await Issue.update(
       {
-        isDelete: 1
+        isDeleted: 1
       },
       {
         where: {
