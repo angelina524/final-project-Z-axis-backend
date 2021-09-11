@@ -1,31 +1,11 @@
 const db = require('../models')
-const { Issue, User } = db
-const {
-  MissingError,
-  GeneralError,
-  VerifyError,
-  NotFound
-} = require('../middlewares/error')
-const { JwtTokenToEmail } = require('../middlewares/authority')
+const { Issue } = db
+const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
+const { getUserId } = require('../middlewares/authority')
 
 const issueController = {
-  // utils method ----------------------
-  getUserId: async (req) => {
-    const token = req.locals.token
-    if (!token) return GeneralError('請先登入')
-    const email = await JwtTokenToEmail(token)
-    const user = await User.findOne({
-      where: {
-        email
-      }
-    })
-    if (!user) throw VerifyError
-    return user.id
-  },
-
-  // router method ------------------
   add: async (req, res) => {
-    const userId = await this.getUserId(req)
+    const userId = await getUserId(res)
     const { title, description, beginTime, finishTime } = req.body
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
@@ -41,7 +21,6 @@ const issueController = {
   },
 
   delete: async (req, res) => {
-    const userId = await this.getUserId(req)
     const { id } = req.params
     await Issue.update(
       {
@@ -50,7 +29,7 @@ const issueController = {
       {
         where: {
           id: Number(id),
-          userId: Number(userId)
+          isDeleted: 0
         }
       }
     )
@@ -61,7 +40,6 @@ const issueController = {
   },
 
   patch: async (req, res) => {
-    const userId = await this.getUserId(req)
     const { title, description, beginTime, finishTime } = req.body
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
@@ -76,7 +54,7 @@ const issueController = {
       {
         where: {
           id: Number(id),
-          userId: Number(userId)
+          isDeleted: 0
         }
       }
     )
@@ -89,13 +67,14 @@ const issueController = {
   },
 
   getAll: async (req, res) => {
-    const userId = await this.getUserId(req)
+    const userId = await getUserId(req)
     const issues = await Issue.findAll({
       where: {
-        userId: Number(userId)
+        userId: Number(userId),
+        isDeleted: 0
       }
     })
-    if (!issues) throw new NotFound('找不到題問')
+    if (!issues) throw new NotFound('您還沒有提問箱喔')
     res.status(200).json({
       ok: 1,
       issues
@@ -103,15 +82,14 @@ const issueController = {
   },
 
   getOne: async (req, res) => {
-    const userId = await this.getUserId(req)
     const { id } = req.params
     const issue = await Issue.findOne({
       where: {
         id: Number(id),
-        userId: Number(userId)
+        isDeleted: 0
       }
     })
-    if (!issue) throw new NotFound('找不到題問')
+    if (!issue) throw new NotFound('找不到這個提問箱')
     res.status(200).json({ ok: 1, issue })
   }
 }
