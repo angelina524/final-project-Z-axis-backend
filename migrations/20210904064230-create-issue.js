@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Issues', {
@@ -10,23 +10,23 @@ module.exports = {
       },
       title: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: false
       },
       description: {
-        type: Sequelize.TEXT,
+        type: Sequelize.TEXT
       },
       beginTime: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
       finishTime: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: false
       },
       isDeleted: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0,
-        allowNull: false,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -36,9 +36,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Issues');
+    await queryInterface.dropTable('Issues')
   }
-};
+}

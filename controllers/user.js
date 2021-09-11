@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt')
-const dotenv = require('dotenv')
 const db = require('../models')
 const {
   MissingError,
@@ -9,13 +8,8 @@ const {
 } = require('../middlewares/error')
 const { emailToJwtToken, JwtTokenToEmail } = require('../middlewares/authority')
 
-const result = dotenv.config()
-if (result.error) {
-  throw result.error
-}
-const { SALTROUNDS } = result.parsed
-
 const { User } = db
+const SALTROUNDS = 10
 
 const isEmailFormatValid = (email) => {
   const regex =
@@ -119,8 +113,12 @@ const userController = {
     if (!user) throw new NotFound('找不到使用者')
     const passwordIsValid = await bcrypt.compare(oldPassword, user.password)
     if (!passwordIsValid) throw VerifyError
-    if (!isPasswordFormatValid(newPassword)) { throw new GeneralError('密碼格式錯誤，需包含英文、數字') }
-    if (newPassword !== againPassword) { throw new GeneralError('兩次密碼輸入不一致') }
+    if (!isPasswordFormatValid(newPassword)) {
+      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+    }
+    if (newPassword !== againPassword) {
+      throw new GeneralError('兩次密碼輸入不一致')
+    }
     const hash = await bcrypt.hash(newPassword, SALTROUNDS)
     const updatedResult = await User.update(
       { password: hash },
