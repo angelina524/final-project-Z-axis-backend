@@ -32,11 +32,14 @@ app.get('/issues', issueController.getAll)
 app.get('/issues/:id', issueController.getOne)
 
 // comment path
-app.post('/issues/:id/comments', commentController.addComment)
-app.delete('/issues/:id/comments/:commentId', commentController.deleteComment)
-app.patch('/issues/:id/comments/:commentId', commentController.editComment)
+app.post('/issues/:issueId/comments', commentController.addComment)
+app.delete(
+  '/issues/:issueId/comments/:commentId',
+  commentController.deleteComment
+)
+app.patch('/issues/:issueId/comments/:commentId', commentController.editComment)
 app.patch(
-  '/issues/:id/comments/:commentId/replies',
+  '/issues/:issueId/comments/:commentId/replies',
   commentController.editReply
 )
 

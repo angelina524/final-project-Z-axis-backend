@@ -5,7 +5,7 @@ const { MissingError, GeneralError } = require('../middlewares/error')
 const commentController = {
   addComment: async (req, res) => {
     const { nickname = 'Anonymous', content } = req.body
-    const { id } = req.params
+    const { issueId } = req.params
     if (!content) throw MissingError
 
     // guestToken?
@@ -14,7 +14,7 @@ const commentController = {
     const comment = await Comment.create({
       nickname,
       content,
-      IssueId: Number(id),
+      IssueId: Number(issueId),
       guestToken
     })
     if (!comment) throw GeneralError('新增留言失敗！')
