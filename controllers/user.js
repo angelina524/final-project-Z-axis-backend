@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const dotenv = require('dotenv')
 const db = require('../models')
 const {
   MissingError,
@@ -9,7 +10,11 @@ const {
 const { emailToJwtToken, JwtTokenToEmail } = require('../middlewares/authority')
 
 const { User } = db
-const SALTROUNDS = 10
+const result = dotenv.config()
+if (result.error) {
+  throw result.error
+}
+const { SALTROUNDS } = result.parsed
 
 const isEmailFormatValid = (email) => {
   const regex =
@@ -121,8 +126,14 @@ const userController = {
     }
     const hash = await bcrypt.hash(newPassword, SALTROUNDS)
     const updatedResult = await User.update(
-      { password: hash },
-      { where: { email } }
+      {
+        password: hash
+      },
+      {
+        where: {
+          email
+        }
+      }
     )
     if (!updatedResult[0]) throw new GeneralError('更新失敗，請再試一次')
 
