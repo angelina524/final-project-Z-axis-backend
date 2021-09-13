@@ -1,30 +1,107 @@
 const db = require('../models')
 const { Issue } = db
+const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
 
 const issueController = {
-  add: (req, res) => {
-    Issue.findAll().then((issue) => {
-      // TODO
+  add: async (req, res) => {
+    const userId = res.locals.id
+    const { title, description, beginTime, finishTime } = req.body
+    // description allow null value
+    if (!title || !beginTime || !finishTime) throw MissingError
+    const issue = await Issue.create({
+      title,
+      description,
+      beginTime,
+      finishTime,
+      userId
+    })
+    if (!issue) throw new GeneralError('新增失敗')
+    res.status(200).json({
+      ok: 1,
+      message: '新增成功',
+      issue
     })
   },
-  delete: (req, res) => {
-    Issue.findOne().then((issue) => {
-      // TODO
+
+  delete: async (req, res) => {
+    const userId = res.locals.id
+    const { id: issueId } = req.params
+    await Issue.update(
+      {
+        isDeleted: 1
+      },
+      {
+        where: {
+          userId,
+          id: Number(issueId),
+          isDeleted: 0
+        }
+      }
+    )
+    res.status(200).json({
+      ok: 1,
+      message: '刪除成功'
     })
   },
-  patch: (req, res) => {
-    Issue.findOne().then((issue) => {
-      // TODO
+
+  patch: async (req, res) => {
+    const userId = res.locals.id
+    const { title, description, beginTime, finishTime } = req.body
+    // description allow null value
+    if (!title || !beginTime || !finishTime) throw MissingError
+    const { id: issueId } = res.params
+    const response = await Issue.update(
+      {
+        title,
+        description,
+        beginTime,
+        finishTime
+      },
+      {
+        where: {
+          userId,
+          id: Number(issueId),
+          isDeleted: 0
+        }
+      }
+    )
+    if (!response) throw new GeneralError('更新失敗')
+    res.status(200).json({
+      ok: 1,
+      message: '更新成功',
+      response
     })
   },
-  getAll: (req, res) => {
-    Issue.findAll().then((issue) => {
-      // TODO
+
+  getAll: async (req, res) => {
+    const userId = res.locals.id
+    const issues = await Issue.findAll({
+      where: {
+        userId,
+        isDeleted: 0
+      }
+    })
+    if (!issues) throw new NotFound('您還沒有提問箱喔')
+    res.status(200).json({
+      ok: 1,
+      issues
     })
   },
-  getOne: (req, res) => {
-    Issue.findOne().then((issue) => {
-      // TODO
+
+  getOne: async (req, res) => {
+    const userId = res.locals.id
+    const { id: issueId } = req.params
+    const issue = await Issue.findOne({
+      where: {
+        id: Number(issueId),
+        userId,
+        isDeleted: 0
+      }
+    })
+    if (!issue) throw new NotFound('找不到這個提問箱')
+    res.status(200).json({
+      ok: 1,
+      issue
     })
   }
 }

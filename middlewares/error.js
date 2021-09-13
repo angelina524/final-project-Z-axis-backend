@@ -33,4 +33,10 @@ const errorHandler = (error, req, res, next) => {
   })
 }
 
-export { GeneralError, MissingError, VerifyError, NotFound, errorHandler }
+module.exports = {
+  GeneralError,
+  MissingError,
+  VerifyError,
+  NotFound,
+  errorHandler
+}
