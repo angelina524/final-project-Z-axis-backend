@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Guests', {
@@ -10,7 +10,7 @@ module.exports = {
       },
       guestToken: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -20,9 +20,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Guests');
+    await queryInterface.dropTable('Guests')
   }
-};
+}

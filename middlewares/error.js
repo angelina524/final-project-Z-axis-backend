@@ -21,7 +21,7 @@ const VerifyError = new Unauthorized('驗證失敗，請重新登入')
 
 const errorHandler = (error, req, res, next) => {
   if (error instanceof GeneralError) {
-    return res.status(error.getStatus).json({
+    return res.status(error.getStatus()).json({
       ok: 0,
       message: error.message
     })

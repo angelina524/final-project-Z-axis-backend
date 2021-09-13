@@ -1,67 +1,72 @@
 const db = require('../models')
-const { Issue_Guest_Comment: Comment } = db
+const { Comment } = db
+const { MissingError, GeneralError } = require('../middlewares/error')
 
 const commentController = {
   addComment: async (req, res) => {
-    const { nickname, content } = req.body
-    const { id } = req.params
+    const { nickname = 'Anonymous', content } = req.body
+    const { issueId } = req.params
+    if (!content) throw MissingError
+
     // guestToken?
     const guestToken = 'testToken123'
-    // todo: error handling
+
     const comment = await Comment.create({
       nickname,
       content,
-      issueId: Number(id),
+      IssueId: Number(issueId),
       guestToken
     })
-    res.send({ comment })
+    if (!comment) throw GeneralError('新增留言失敗！')
+
+    res.status(200).json({
+      ok: 1,
+      message: '新增留言成功！',
+      comment
+    })
   },
   deleteComment: async (req, res) => {
-    const { id } = req.params
-    // todo: error handling
-    await Comment.destroy({
+    const { commentId } = req.params
+
+    const response = await Comment.destroy({
       where: {
-        id: Number(id)
+        id: Number(commentId)
       }
     })
-    res.send('deleteComment')
+    if (!response) throw new GeneralError('刪除留言失敗！')
+
+    res.status(200).json({
+      ok: 1,
+      message: '刪除留言成功！'
+    })
   },
   editComment: async (req, res) => {
     const { nickname, content } = req.body
-    const { id } = req.params
-    // todo: error handling
-    const response = await Comment.update(
+    const { commentId } = req.params
+    if (!content) throw MissingError
+
+    const comment = await Comment.update(
       {
         nickname,
         content
       },
       {
         where: {
-          id: Number(id)
+          id: Number(commentId)
         }
       }
     )
-    res.send({ response })
-  },
-  getAllComments: async (req, res) => {
-    // todo: error handling
-    const comments = await Comment.findAll()
-    res.send({ comments })
-  },
-  getOneComment: async (req, res) => {
-    const { id } = req.params
-    // todo: error handling
-    const comment = await Comment.findOne({
-      where: {
-        id: Number(id)
-      }
+    if (!comment[0]) throw new GeneralError('編輯留言失敗！')
+
+    res.status(200).json({
+      ok: 1,
+      message: '編輯留言成功！'
     })
-    res.send({ comment })
   },
   editReply: async (req, res) => {
     const { reply } = req.body
-    const { id } = req.params
-    // todo: error handling
+    const { commentId } = req.params
+
     const response = await Comment.update(
       {
         reply,
@@ -69,22 +74,16 @@ const commentController = {
       },
       {
         where: {
-          id: Number(id)
+          id: Number(commentId)
         }
       }
     )
-    res.send({ response })
-  },
-  getAllReplies: async (req, res) => {
-    const { id } = req.params
-    // todo: error handling
-    const replies = await Comment.findAll({
-      where: {
-        issueId: Number(id)
-      },
-      attributes: ['reply', 'replyCreateAt']
+    if (!response) throw new GeneralError('編輯回覆失敗！')
+
+    res.status(200).json({
+      ok: 1,
+      message: '編輯回覆成功！'
     })
-    res.send({ replies })
   }
 }
 

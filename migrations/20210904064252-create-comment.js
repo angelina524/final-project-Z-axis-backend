@@ -1,7 +1,7 @@
-'use strict';
+'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Issue_Guest_Comments', {
+    await queryInterface.createTable('Comments', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,21 +10,21 @@ module.exports = {
       },
       nickname: {
         type: Sequelize.STRING(32),
-        allowNull: false,
+        allowNull: false
       },
       content: {
         type: Sequelize.TEXT,
-        allowNull: false,
+        allowNull: false
       },
       likesNum: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
-        allowNull: false,
+        allowNull: false
       },
       isResolved: {
         type: Sequelize.BOOLEAN,
         defaultValue: 0,
-        allowNull: false,
+        allowNull: false
       },
       reply: {
         type: Sequelize.TEXT
@@ -40,9 +40,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Issue_Guest_Comments');
+    await queryInterface.dropTable('Comments')
   }
-};
+}
