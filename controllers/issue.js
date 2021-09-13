@@ -1,11 +1,10 @@
 const db = require('../models')
 const { Issue } = db
 const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
-const { getUserId } = require('../middlewares/authority')
 
 const issueController = {
   add: async (req, res) => {
-    const userId = await getUserId(res)
+    const userId = res.locals.id
     const { title, description, beginTime, finishTime } = req.body
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
@@ -17,12 +16,16 @@ const issueController = {
       userId
     })
     if (!issue) throw new GeneralError('新增失敗')
-    res.status(200).json({ ok: 1, message: '新增成功', issue })
+    res.status(200).json({
+      ok: 1,
+      message: '新增成功',
+      issue
+    })
   },
 
   delete: async (req, res) => {
-    const userId = await getUserId(res)
-    const { id } = req.params
+    const userId = res.locals.id
+    const { id: issueId } = req.params
     await Issue.update(
       {
         isDeleted: 1
@@ -30,7 +33,7 @@ const issueController = {
       {
         where: {
           userId,
-          id: Number(id),
+          id: Number(issueId),
           isDeleted: 0
         }
       }
@@ -42,11 +45,11 @@ const issueController = {
   },
 
   patch: async (req, res) => {
-    const userId = await getUserId(res)
+    const userId = res.locals.id
     const { title, description, beginTime, finishTime } = req.body
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
-    const { id } = res.params
+    const { id: issueId } = res.params
     const response = await Issue.update(
       {
         title,
@@ -57,7 +60,7 @@ const issueController = {
       {
         where: {
           userId,
-          id: Number(id),
+          id: Number(issueId),
           isDeleted: 0
         }
       }
@@ -71,7 +74,7 @@ const issueController = {
   },
 
   getAll: async (req, res) => {
-    const userId = await getUserId(res)
+    const userId = res.locals.id
     const issues = await Issue.findAll({
       where: {
         userId,
@@ -86,17 +89,20 @@ const issueController = {
   },
 
   getOne: async (req, res) => {
-    const userId = await getUserId(res)
-    const { id } = req.params
+    const userId = res.locals.id
+    const { id: issueId } = req.params
     const issue = await Issue.findOne({
       where: {
-        id: Number(id),
+        id: Number(issueId),
         userId,
         isDeleted: 0
       }
     })
     if (!issue) throw new NotFound('找不到這個提問箱')
-    res.status(200).json({ ok: 1, issue })
+    res.status(200).json({
+      ok: 1,
+      issue
+    })
   }
 }
 
