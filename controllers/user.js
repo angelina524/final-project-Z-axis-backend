@@ -86,13 +86,6 @@ const userController = {
   },
   editProfile: async (req, res) => {
     const id = res.locals.id
-    const user = await User.findOne({
-      where: {
-        id,
-        isDeleted: 0
-      }
-    })
-    if (!user) throw new NotFound('找不到使用者')
     const { nickname, email } = req.body
     if (!nickname || !email) throw MissingError
     if (!isEmailFormatValid(email)) throw new GeneralError('信箱格式錯誤')
@@ -105,7 +98,7 @@ const userController = {
       },
       {
         where: {
-          email: user.email,
+          id,
           isDeleted: 0
         }
       }
@@ -167,7 +160,8 @@ const userController = {
       },
       {
         where: {
-          id
+          id,
+          isDeleted: 0
         }
       }
     )
