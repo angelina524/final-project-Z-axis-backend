@@ -25,7 +25,7 @@ module.exports = {
       },
       isDeleted: {
         type: Sequelize.BOOLEAN,
-        defaultValue: 0,
+        defaultValue: false,
         allowNull: false
       },
       userToken: {

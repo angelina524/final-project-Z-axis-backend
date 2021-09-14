@@ -37,13 +37,13 @@ const userController = {
         '密碼格式錯誤，長度需為 8 以上並包含小寫英文字母、數字'
       )
     }
-    const hash = await bcrypt.hash(password, SALTROUNDS)
+    const hash = await bcrypt.hash(password, Number(SALTROUNDS))
     const token = await emailToJwtToken(email)
     await User.create({
       nickname,
       email,
       password: hash,
-      token
+      userToken: token
     })
 
     return res.status(200).json({
@@ -56,7 +56,8 @@ const userController = {
     if (!email || !password) throw MissingError
     const user = await User.findOne({
       where: {
-        email
+        email,
+        isDeleted: 0
       }
     })
     if (!user) throw VerifyError
@@ -65,14 +66,15 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      token: user.token
+      token: user.userToken
     })
   },
   getOneProfile: async (req, res) => {
-    const token = req.locals.token
+    const id = res.locals.id
     const user = await User.findOne({
       where: {
-        email: JwtTokenToEmail(token)
+        id,
+        isDeleted: 0
       }
     })
     if (!user) throw new NotFound('找不到使用者')
@@ -83,55 +85,70 @@ const userController = {
     })
   },
   editProfile: async (req, res) => {
-    const token = req.locals.token
+    const id = res.locals.id
     const user = await User.findOne({
       where: {
-        email: JwtTokenToEmail(token)
+        id,
+        isDeleted: 0
       }
     })
     if (!user) throw new NotFound('找不到使用者')
-    const nickname = req.body.nickname || user.nickname
-    const email = req.body.email || user.email
+    const { nickname, email } = req.body
     if (!nickname || !email) throw MissingError
     if (!isEmailFormatValid(email)) throw new GeneralError('信箱格式錯誤')
-    const updatedResult = await User.update({
-      nickname,
-      email
-    })
+    const newToken = await emailToJwtToken(email)
+    const updatedResult = await User.update(
+      {
+        nickname,
+        email,
+        token: newToken
+      },
+      {
+        where: {
+          email: user.email,
+          isDeleted: 0
+        }
+      }
+    )
     if (!updatedResult[0]) throw new GeneralError('更新失敗，請再試一次')
 
     return res.status(200).json({
       ok: 1,
-      message: '個人資訊更新成功'
+      message: '個人資訊更新成功',
+      token: newToken
     })
   },
   updatePassword: async (req, res) => {
     const { oldPassword, newPassword, againPassword } = req.body
     if (!oldPassword || !newPassword || !againPassword) throw MissingError
-    const token = req.locals.token
-    const email = JwtTokenToEmail(token)
+    const id = res.locals.id
     const user = await User.findOne({
       where: {
-        email
+        id,
+        isDeleted: 0
       }
     })
     if (!user) throw new NotFound('找不到使用者')
+    if (!isPasswordFormatValid(oldPassword)) {
+      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+    }
     const passwordIsValid = await bcrypt.compare(oldPassword, user.password)
-    if (!passwordIsValid) throw VerifyError
+    if (!passwordIsValid) throw new GeneralError('密碼錯誤，請再次確認')
     if (!isPasswordFormatValid(newPassword)) {
       throw new GeneralError('密碼格式錯誤，需包含英文、數字')
     }
     if (newPassword !== againPassword) {
       throw new GeneralError('兩次密碼輸入不一致')
     }
-    const hash = await bcrypt.hash(newPassword, SALTROUNDS)
+    const hash = await bcrypt.hash(newPassword, Number(SALTROUNDS))
     const updatedResult = await User.update(
       {
         password: hash
       },
       {
         where: {
-          email
+          id,
+          isDeleted: 0
         }
       }
     )
@@ -141,7 +158,27 @@ const userController = {
       ok: 1,
       message: '密碼更新成功'
     })
-  }
+  },
+  delete: async (req, res) => {
+    const id = res.locals.id
+    const deletedResult = await User.update(
+      {
+        isDeleted: true
+      },
+      {
+        where: {
+          id
+        }
+      }
+    )
+    console.log(deletedResult, id)
+    if (!deletedResult[0]) throw new GeneralError('刪除失敗，請再試一次')
+
+    return res.status(200).json({
+      ok: 1,
+      message: '刪除成功'
+    })
+  },
 }
 
 module.exports = userController
