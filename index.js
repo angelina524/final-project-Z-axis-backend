@@ -4,8 +4,9 @@ const dotenv = require('dotenv')
 const { errorHandler, catchAsyncError } = require('./middlewares/error')
 const { checkLoginAuth } = require('./middlewares/authority')
 const userController = require('./controllers/user')
-const issueController = require('./controllers/issue')
 const commentController = require('./controllers/comment')
+
+const issueRouter = require('./routes/IssueRouter')
 
 const app = express()
 const result = dotenv.config()
@@ -43,15 +44,16 @@ app.delete(
 )
 
 // issue path
-app.post(
-  '/issues',
-  catchAsyncError(checkLoginAuth),
-  catchAsyncError(issueController.add)
-)
-app.delete('/issues/:issueId', catchAsyncError(issueController.delete))
-app.patch('/issues/:issueId', catchAsyncError(issueController.patch))
-app.get('/issues', catchAsyncError(issueController.getAll))
-app.get('/issues/:issueId', catchAsyncError(issueController.getOne))
+// app.post(
+//   '/issues',
+//   catchAsyncError(checkLoginAuth),
+//   catchAsyncError(issueController.add)
+// )
+// app.delete('/issues/:issueId', catchAsyncError(issueController.delete))
+// app.patch('/issues/:issueId', catchAsyncError(issueController.patch))
+// app.get('/issues', catchAsyncError(issueController.getAll))
+// app.get('/issues/:issueId', catchAsyncError(issueController.getOne))
+app.use('/issue', issueRouter)
 
 // comment path
 app.post(

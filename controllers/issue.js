@@ -25,7 +25,7 @@ const issueController = {
 
   delete: async (req, res) => {
     const userId = res.locals.id
-    const { id: issueId } = req.params
+    const { issueId } = req.params
     await Issue.update(
       {
         isDeleted: 1
@@ -49,7 +49,7 @@ const issueController = {
     const { title, description, beginTime, finishTime } = req.body
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
-    const { id: issueId } = res.params
+    const { issueId } = res.params
     const response = await Issue.update(
       {
         title,
@@ -90,7 +90,7 @@ const issueController = {
 
   getOne: async (req, res) => {
     const userId = res.locals.id
-    const { id: issueId } = req.params
+    const { issueId } = req.params
     const issue = await Issue.findOne({
       where: {
         id: Number(issueId),
