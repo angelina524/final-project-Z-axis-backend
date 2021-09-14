@@ -1,10 +1,10 @@
 class GeneralError extends Error {
-  constructor(message) {
+  constructor (message) {
     super()
     this.message = message
   }
 
-  getStatus() {
+  getStatus () {
     if (this instanceof BadRequest) return 400
     if (this instanceof Unauthorized) return 401
     if (this instanceof NotFound) return 404
@@ -12,9 +12,9 @@ class GeneralError extends Error {
   }
 }
 
-class BadRequest extends GeneralError { }
-class Unauthorized extends GeneralError { }
-class NotFound extends GeneralError { }
+class BadRequest extends GeneralError {}
+class Unauthorized extends GeneralError {}
+class NotFound extends GeneralError {}
 
 const MissingError = new BadRequest('資料輸入不齊全，請輸入完整資料')
 const VerifyError = new Unauthorized('驗證失敗，請重新登入')

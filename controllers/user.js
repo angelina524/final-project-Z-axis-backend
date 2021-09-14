@@ -7,7 +7,7 @@ const {
   VerifyError,
   NotFound
 } = require('../middlewares/error')
-const { emailToJwtToken, JwtTokenToEmail } = require('../middlewares/authority')
+const { emailToJwtToken } = require('../middlewares/authority')
 
 const { User } = db
 const result = dotenv.config()
@@ -171,7 +171,7 @@ const userController = {
       ok: 1,
       message: '刪除成功'
     })
-  },
+  }
 }
 
 module.exports = userController

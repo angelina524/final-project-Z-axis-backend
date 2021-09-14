@@ -1,13 +1,9 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const db = require('../models')
-const { User } = db
+const { User, Issue } = db
 
-const {
-  GeneralError,
-  NotFound,
-  Unauthorized
-} = require('./error')
+const { GeneralError, NotFound, Unauthorized } = require('./error')
 
 const result = dotenv.config()
 if (result.error) {
@@ -56,7 +52,6 @@ const CompareUserId = async (url, params, id) => {
   // if (url.includes('comments')) {
 
   // }
-
 }
 
 const checkAuth = async (req, res, next) => {
@@ -81,5 +76,10 @@ const checkLoginAuth = async (req, res, next) => {
   return next()
 }
 
-
-module.exports = { emailToJwtToken, JwtTokenToEmail, getUserId, checkLoginAuth, checkAuth }
+module.exports = {
+  emailToJwtToken,
+  JwtTokenToEmail,
+  getUserId,
+  checkLoginAuth,
+  checkAuth
+}
