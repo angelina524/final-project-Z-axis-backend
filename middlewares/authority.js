@@ -24,7 +24,7 @@ const emailToJwtToken = (email) => {
 
 const JwtTokenToEmail = (token) => {
   const payload = jwt.verify(token, JWT_SECRET_KEY)
-  if (!payload.email) return false
+  if (!payload) throw new Unauthorized('請重新登入')
   return payload.email
 }
 

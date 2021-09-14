@@ -23,7 +23,7 @@ app.post('/users/register', catchAsyncError(userController.register))
 app.post('/users/login', catchAsyncError(userController.login))
 app.get('/users/me', catchAsyncError(checkLoginAuth), catchAsyncError(userController.getOneProfile))
 app.patch('/users/me', catchAsyncError(checkLoginAuth), catchAsyncError(userController.editProfile))
-app.patch('/users/updatePassword', catchAsyncError(checkLoginAuth), catchAsyncError(userController.updatePassword))
+app.patch('/users/me/updatePassword', catchAsyncError(checkLoginAuth), catchAsyncError(userController.updatePassword))
 app.delete('/users/me', catchAsyncError(checkLoginAuth), catchAsyncError(userController.delete))
 
 // issue path

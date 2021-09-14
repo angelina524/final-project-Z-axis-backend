@@ -114,6 +114,9 @@ const userController = {
   updatePassword: async (req, res) => {
     const { oldPassword, newPassword, againPassword } = req.body
     if (!oldPassword || !newPassword || !againPassword) throw MissingError
+    if (!isPasswordFormatValid(oldPassword)) {
+      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+    }
     const id = res.locals.id
     const user = await User.findOne({
       where: {
@@ -122,9 +125,6 @@ const userController = {
       }
     })
     if (!user) throw new NotFound('找不到使用者')
-    if (!isPasswordFormatValid(oldPassword)) {
-      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
-    }
     const passwordIsValid = await bcrypt.compare(oldPassword, user.password)
     if (!passwordIsValid) throw new GeneralError('密碼錯誤，請再次確認')
     if (!isPasswordFormatValid(newPassword)) {
@@ -156,7 +156,7 @@ const userController = {
     const id = res.locals.id
     const deletedResult = await User.update(
       {
-        isDeleted: true
+        isDeleted: 1
       },
       {
         where: {
@@ -165,7 +165,6 @@ const userController = {
         }
       }
     )
-    console.log(deletedResult, id)
     if (!deletedResult[0]) throw new GeneralError('刪除失敗，請再試一次')
 
     return res.status(200).json({
