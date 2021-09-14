@@ -1,12 +1,9 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const db = require('../models')
-const { User } = db
+const { User, Issue } = db
 
-const {
-  GeneralError,
-  VerifyError
-} = require('../error')
+const { GeneralError, NotFound, Unauthorized } = require('./error')
 
 const result = dotenv.config()
 if (result.error) {
@@ -23,13 +20,11 @@ const emailToJwtToken = (email) => {
 
 const JwtTokenToEmail = (token) => {
   const payload = jwt.verify(token, JWT_SECRET_KEY)
-  if (!payload.email) return false
+  if (!payload) throw new Unauthorized('請重新登入')
   return payload.email
 }
 
-const getUserId = async (res) => {
-  const token = res.locals.token
-  if (!token) return GeneralError('請先登入')
+const getUserId = async (token) => {
   const email = await JwtTokenToEmail(token)
   const user = await User.findOne({
     where: {
@@ -37,8 +32,54 @@ const getUserId = async (res) => {
       isDeleted: 0
     }
   })
-  if (!user) throw VerifyError
+  if (!user) throw new NotFound('找不到使用者')
   return user.id
 }
 
-module.exports = { emailToJwtToken, JwtTokenToEmail, getUserId }
+const CompareUserId = async (url, params, id) => {
+  if (url.includes('issues') && !url.includes('comments')) {
+    const issueId = params
+    const issue = await Issue.findOne({
+      where: {
+        id: issueId,
+        isDeleted: 0,
+        userId: id
+      }
+    })
+    return !!issue
+  }
+
+  // if (url.includes('comments')) {
+
+  // }
+}
+
+const checkAuth = async (req, res, next) => {
+  const token = req.header('Authorization').replace('Bearer ', '')
+  if (!token.trim()) throw new GeneralError('請先登入')
+
+  const id = await getUserId(token)
+  res.locals.id = id
+
+  const url = req.url
+  const params = req.params
+  return CompareUserId(url, params, id)
+}
+
+const checkLoginAuth = async (req, res, next) => {
+  const token = req.header('Authorization').replace('Bearer ', '')
+  if (!token.trim()) throw new GeneralError('請先登入')
+
+  const id = await getUserId(token)
+  res.locals.id = id
+
+  return next()
+}
+
+module.exports = {
+  emailToJwtToken,
+  JwtTokenToEmail,
+  getUserId,
+  checkLoginAuth,
+  checkAuth
+}

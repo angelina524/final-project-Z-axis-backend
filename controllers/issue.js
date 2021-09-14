@@ -13,7 +13,7 @@ const issueController = {
       description,
       beginTime,
       finishTime,
-      userId
+      UserId: Number(userId)
     })
     if (!issue) throw new GeneralError('新增失敗')
     res.status(200).json({

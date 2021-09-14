@@ -33,10 +33,15 @@ const errorHandler = (error, req, res, next) => {
   })
 }
 
+const catchAsyncError = (fn) => (req, res, next) => {
+  fn(req, res, next).catch(next)
+}
+
 module.exports = {
   GeneralError,
   MissingError,
   VerifyError,
   NotFound,
-  errorHandler
+  errorHandler,
+  catchAsyncError
 }
