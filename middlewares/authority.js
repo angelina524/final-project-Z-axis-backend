@@ -37,7 +37,10 @@ const getUserId = async (token) => {
 }
 
 const CompareUserId = async (url, params, id) => {
-  if (url.includes('issues') && !url.includes('comments')) {
+  // if (url.includes('comments')) {
+
+  // }
+  if (url.includes('issues')) {
     const issueId = params
     const issue = await Issue.findOne({
       where: {
@@ -48,10 +51,6 @@ const CompareUserId = async (url, params, id) => {
     })
     return !!issue
   }
-
-  // if (url.includes('comments')) {
-
-  // }
 }
 
 const checkAuth = async (req, res, next) => {
@@ -63,7 +62,11 @@ const checkAuth = async (req, res, next) => {
 
   const url = req.url
   const params = req.params
-  return CompareUserId(url, params, id)
+  if (CompareUserId(url, params, id)) {
+    return next()
+  } else {
+    throw new GeneralError('不是你留言')
+  }
 }
 
 const checkLoginAuth = async (req, res, next) => {
