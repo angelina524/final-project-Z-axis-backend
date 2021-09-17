@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const dotenv = require('dotenv')
 const db = require('../models')
-const { User, Issue } = db
+const { User, Issue, Comment, Guest } = db
 
 const { GeneralError, NotFound, Unauthorized } = require('./error')
 
@@ -24,7 +24,11 @@ const JwtTokenToEmail = (token) => {
   return payload.email
 }
 
-const getUserId = async (token) => {
+// checkUser
+const getUserId = async (req) => {
+  const token = req.header('Authorization').replace('Bearer ', '')
+  if (!token.trim()) throw new GeneralError('請先登入')
+
   const email = await JwtTokenToEmail(token)
   const user = await User.findOne({
     where: {
@@ -36,12 +40,9 @@ const getUserId = async (token) => {
   return user.id
 }
 
-const CompareUserId = async (url, params, id) => {
-  // if (url.includes('comments')) {
-
-  // }
-  if (url.includes('issues')) {
-    const issueId = params
+const compareUserId = async (req, id) => {
+  if (req.url.includes('issues')) {
+    const issueId = req.params
     const issue = await Issue.findOne({
       where: {
         id: issueId,
@@ -53,36 +54,80 @@ const CompareUserId = async (url, params, id) => {
   }
 }
 
-const checkAuth = async (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '')
-  if (!token.trim()) throw new GeneralError('請先登入')
-
-  const id = await getUserId(token)
+const checkUserAuth = async (req, res, next) => {
+  const id = await getUserId(req)
   res.locals.id = id
 
-  const url = req.url
-  const params = req.params
-  if (CompareUserId(url, params, id)) {
+  if (compareUserId(req, id)) {
     return next()
   } else {
-    throw new GeneralError('不是你留言')
+    throw new Unauthorized('未通過權限驗證，請確認權限')
   }
 }
 
 const checkLoginAuth = async (req, res, next) => {
-  const token = req.header('Authorization').replace('Bearer ', '')
-  if (!token.trim()) throw new GeneralError('請先登入')
-
-  const id = await getUserId(token)
+  const id = await getUserId(req)
   res.locals.id = id
 
   return next()
 }
 
+// checkGuest
+const getGuestToken = async (req) => {
+  const token = req.headers['guest-token']
+  if (!token.trim()) throw new GeneralError('確認訪客失敗，請重新載入網頁')
+
+  const guest = await Guest.findOne({
+    where: {
+      guestToken: token
+    }
+  })
+  if (!guest) throw new NotFound('找不到訪客資訊')
+  return guest.guestToken
+}
+
+const compareGuestToken = async (req) => {
+  const guestToken = getGuestToken(req)
+  const commentId = req.params
+  const guest = await Comment.findOne({
+    where: {
+      id: commentId,
+      guestToken
+    }
+  })
+  return !!guest
+}
+
+const checkGuestAuth = async (req, res, next) => {
+  if (compareGuestToken(req)) {
+    return next()
+  } else {
+    throw new Unauthorized('未通過權限驗證，請確認權限')
+  }
+}
+
+const checkGuestToken = (req, res, next) => {
+  if (getGuestToken(req)) {
+    return next()
+  } else {
+    throw new Unauthorized('請重新載入網頁')
+  }
+}
+
+// checkUser || checkGuest
+const checkGuestOrUserAuth = (req, res, next) => {
+  if (compareGuestToken(req) || compareUserId(req, getUserId(req))) {
+    return next()
+  } else {
+    throw new Unauthorized('未通過權限驗證，請確認權限')
+  }
+}
+
 module.exports = {
   emailToJwtToken,
-  JwtTokenToEmail,
-  getUserId,
   checkLoginAuth,
-  checkAuth
+  checkUserAuth,
+  checkGuestToken,
+  checkGuestAuth,
+  checkGuestOrUserAuth
 }
