@@ -16,7 +16,7 @@ const commentController = {
       IssueId: Number(issueId),
       guestToken
     })
-    if (!comment) throw GeneralError('新增留言失敗！')
+    if (!comment) throw new GeneralError('新增留言失敗！')
 
     res.status(200).json({
       ok: 1,

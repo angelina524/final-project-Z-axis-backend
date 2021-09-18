@@ -117,22 +117,17 @@ const checkGuestOrUserAuth = async (req, res, next) => {
   let guestToken = null
   if (req.header('Authorization')) {
     userToken = req.header('Authorization').replace('Bearer ', '')
-  } else if (req.headers['guest-token']) {
+  } else {
     guestToken = req.headers['guest-token']
   }
   if (userToken) {
     const id = await getUserId(req)
     const isUserMatched = await compareUserId(req.params, id)
-    if (!isUserMatched) {
-      throw new Unauthorized('未通過權限驗證，請確認權限')
-    }
-    return next()
-  } else if (guestToken) {
+    if (isUserMatched) return next()
+  }
+  if (guestToken) {
     const isGuestMatched = await compareGuestToken(guestToken, req.params)
-    if (!isGuestMatched) {
-      throw new Unauthorized('未通過權限驗證，請確認權限')
-    }
-    return next()
+    if (isGuestMatched) return next()
   }
   throw new Unauthorized('未通過權限驗證，請確認權限')
 }
