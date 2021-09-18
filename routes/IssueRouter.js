@@ -24,6 +24,6 @@ issueRouter.get(
   catchAsyncError(checkAuth),
   catchAsyncError(issueController.getAll)
 )
-issueRouter.get('/:issueId', catchAsyncError(issueController.getOne))
+issueRouter.get('/:issueURL', catchAsyncError(issueController.getOne))
 
 module.exports = issueRouter
