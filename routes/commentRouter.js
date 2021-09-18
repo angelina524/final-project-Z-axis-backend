@@ -16,5 +16,6 @@ commentRouter.patch(
   '/:commentId/replies',
   catchAsyncError(commentController.editReply)
 )
+commentRouter.get('/', catchAsyncError(commentController.getAllComments))
 
 module.exports = commentRouter

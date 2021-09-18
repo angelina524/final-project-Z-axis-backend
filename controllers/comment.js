@@ -84,6 +84,20 @@ const commentController = {
       ok: 1,
       message: '編輯回覆成功！'
     })
+  },
+  getAllComments: async (req, res) => {
+    const { issueId } = req.params
+
+    const comments = await Comment.findAll({
+      where: {
+        IssueId: Number(issueId)
+      }
+    })
+
+    res.status(200).json({
+      ok: 1,
+      comments
+    })
   }
 }
 
