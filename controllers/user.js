@@ -81,7 +81,10 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      user
+      user: {
+        nickname: user.nickname,
+        email: user.email
+      }
     })
   },
   editProfile: async (req, res) => {

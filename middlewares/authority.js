@@ -40,29 +40,27 @@ const getUserId = async (req) => {
   return user.id
 }
 
-const compareUserId = async (req, id) => {
-  if (req.url.includes('issues')) {
-    const issueId = req.params
-    const issue = await Issue.findOne({
-      where: {
-        id: issueId,
-        isDeleted: 0,
-        userId: id
-      }
-    })
-    return !!issue
-  }
+const compareUserId = async (params, id) => {
+  const { issueId } = params
+  const issue = await Issue.findOne({
+    where: {
+      id: issueId,
+      isDeleted: 0,
+      userId: id
+    }
+  })
+  return !!issue
 }
 
 const checkUserAuth = async (req, res, next) => {
   const id = await getUserId(req)
   res.locals.id = id
 
-  if (compareUserId(req, id)) {
-    return next()
-  } else {
+  const isUserMatched = await compareUserId(req.params, id)
+  if (!isUserMatched) {
     throw new Unauthorized('未通過權限驗證，請確認權限')
   }
+  return next()
 }
 
 const checkLoginAuth = async (req, res, next) => {
@@ -73,8 +71,8 @@ const checkLoginAuth = async (req, res, next) => {
 }
 
 // checkGuest
-const getGuestToken = async (req) => {
-  const token = req.headers['guest-token']
+const getGuestToken = async (headers) => {
+  const token = headers['guest-token']
   if (!token.trim()) throw new GeneralError('確認訪客失敗，請重新載入網頁')
 
   const guest = await Guest.findOne({
@@ -86,9 +84,8 @@ const getGuestToken = async (req) => {
   return guest.guestToken
 }
 
-const compareGuestToken = async (req) => {
-  const guestToken = getGuestToken(req)
-  const commentId = req.params
+const compareGuestToken = async (guestToken, params) => {
+  const { commentId } = params
   const guest = await Comment.findOne({
     where: {
       id: commentId,
@@ -99,28 +96,45 @@ const compareGuestToken = async (req) => {
 }
 
 const checkGuestAuth = async (req, res, next) => {
-  if (compareGuestToken(req)) {
-    return next()
-  } else {
+  const guestToken = await getGuestToken(req.headers)
+  if (!guestToken) throw new GeneralError('請重新載入網頁')
+  const isGuestMatched = await compareGuestToken(guestToken, req.params)
+  if (!isGuestMatched) {
     throw new Unauthorized('未通過權限驗證，請確認權限')
   }
+  return next()
 }
 
-const checkGuestToken = (req, res, next) => {
-  if (getGuestToken(req)) {
-    return next()
-  } else {
-    throw new Unauthorized('請重新載入網頁')
-  }
+const checkGuestToken = async (req, res, next) => {
+  const guestToken = await getGuestToken(req.headers)
+  if (!guestToken) throw new GeneralError('請重新載入網頁')
+  return next()
 }
 
 // checkUser || checkGuest
-const checkGuestOrUserAuth = (req, res, next) => {
-  if (compareGuestToken(req) || compareUserId(req, getUserId(req))) {
-    return next()
-  } else {
-    throw new Unauthorized('未通過權限驗證，請確認權限')
+const checkGuestOrUserAuth = async (req, res, next) => {
+  let userToken = null
+  let guestToken = null
+  if (req.header('Authorization')) {
+    userToken = req.header('Authorization').replace('Bearer ', '')
+  } else if (req.headers['guest-token']) {
+    guestToken = req.headers['guest-token']
   }
+  if (userToken) {
+    const id = await getUserId(req)
+    const isUserMatched = await compareUserId(req.params, id)
+    if (!isUserMatched) {
+      throw new Unauthorized('未通過權限驗證，請確認權限')
+    }
+    return next()
+  } else if (guestToken) {
+    const isGuestMatched = await compareGuestToken(guestToken, req.params)
+    if (!isGuestMatched) {
+      throw new Unauthorized('未通過權限驗證，請確認權限')
+    }
+    return next()
+  }
+  throw new Unauthorized('未通過權限驗證，請確認權限')
 }
 
 module.exports = {

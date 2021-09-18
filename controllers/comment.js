@@ -4,13 +4,11 @@ const { MissingError, GeneralError } = require('../middlewares/error')
 
 const commentController = {
   addComment: async (req, res) => {
-    const nickname = req.body || 'Anonymous'
-    const content = req.body
+    const nickname = req.body.nickname || 'Anonymous'
+    const content = req.body.content
+    const guestToken = req.headers['guest-token']
     const { issueId } = req.params
     if (!content) throw MissingError
-
-    // guestToken?
-    const guestToken = 'testToken123'
 
     const comment = await Comment.create({
       nickname,

@@ -26,7 +26,7 @@ const issueController = {
   delete: async (req, res) => {
     const userId = res.locals.id
     const { issueId } = req.params
-    await Issue.update(
+    const deletedResult = await Issue.update(
       {
         isDeleted: 1
       },
@@ -38,6 +38,7 @@ const issueController = {
         }
       }
     )
+    if (!deletedResult[0]) throw new GeneralError('刪除失敗，請再試一次')
     res.status(200).json({
       ok: 1,
       message: '刪除成功'
@@ -50,7 +51,7 @@ const issueController = {
     // description allow null value
     if (!title || !beginTime || !finishTime) throw MissingError
     const { issueId } = req.params
-    const response = await Issue.update(
+    const updatedResult = await Issue.update(
       {
         title,
         description,
@@ -65,11 +66,10 @@ const issueController = {
         }
       }
     )
-    if (!response) throw new GeneralError('更新失敗')
+    if (!updatedResult[0]) throw new GeneralError('更新失敗，請再試一次')
     res.status(200).json({
       ok: 1,
-      message: '更新成功',
-      response
+      message: '更新成功'
     })
   },
 
