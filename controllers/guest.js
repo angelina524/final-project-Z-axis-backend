@@ -15,7 +15,7 @@ const guestController = {
     const guest = await Guest.create({
       guestToken
     })
-    if (!guest) throw GeneralError('新增 guest 失敗！')
+    if (!guest) throw new GeneralError('新增 guest 失敗！')
 
     res.status(200).json({
       ok: 1,

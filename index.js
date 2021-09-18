@@ -1,5 +1,6 @@
 const express = require('express')
 const dotenv = require('dotenv')
+const cors = require('cors')
 
 const { errorHandler } = require('./middlewares/error')
 
@@ -18,6 +19,7 @@ const port = PORT || 5001
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
+app.use(cors())
 
 // routers
 app.use('/users', userRouter)
