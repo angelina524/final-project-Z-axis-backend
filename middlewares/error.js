@@ -41,6 +41,7 @@ module.exports = {
   GeneralError,
   MissingError,
   VerifyError,
+  Unauthorized,
   NotFound,
   errorHandler,
   catchAsyncError
