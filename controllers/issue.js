@@ -1,7 +1,7 @@
 const db = require('../models')
 const { Issue } = db
 const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
-const { encrypt, decrypt } = require('../middlewares/crypto')
+const { encrypt, decrypt } = require('../utils/crypto')
 
 const issueController = {
   add: async (req, res) => {
@@ -87,10 +87,15 @@ const issueController = {
         isDeleted: 0
       }
     })
-    if (!issues) throw new NotFound('您還沒有提問箱喔')
+
+    const issuesWithURL = issues.map((issue) => {
+      const url = encrypt(issue.id.toString())
+      return { issue, url }
+    })
+
     res.status(200).json({
       ok: 1,
-      issues
+      issuesWithURL
     })
   },
 
