@@ -1,6 +1,7 @@
 const db = require('../models')
 const { Issue } = db
 const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
+const { encrypt, decrypt } = require('../utils/crypto')
 
 const issueController = {
   add: async (req, res) => {
@@ -16,9 +17,14 @@ const issueController = {
       UserId: Number(userId)
     })
     if (!issue) throw new GeneralError('新增失敗')
+    // encrypt: issueId => issueRUL
+    const issueId = issue.id.toString()
+    const encoded = encrypt(issueId)
+
     res.status(200).json({
       ok: 1,
       message: '新增成功',
+      url: encoded,
       issue
     })
   },
@@ -81,15 +87,21 @@ const issueController = {
         isDeleted: 0
       }
     })
-    if (!issues) throw new NotFound('您還沒有提問箱喔')
+
+    const issuesWithURL = issues.map((issue) => {
+      const url = encrypt(issue.id.toString())
+      return { issue, url }
+    })
+
     res.status(200).json({
       ok: 1,
-      issues
+      issuesWithURL
     })
   },
 
   getOne: async (req, res) => {
-    const { issueId } = req.params
+    const { issueURL } = req.params
+    const issueId = decrypt(issueURL)
     const issue = await Issue.findOne({
       where: {
         id: Number(issueId),
