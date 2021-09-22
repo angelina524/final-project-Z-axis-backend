@@ -1,3 +1,5 @@
+const { UniqueConstraintError } = require('sequelize')
+
 class GeneralError extends Error {
   constructor (message) {
     super()
@@ -20,6 +22,13 @@ const MissingError = new BadRequest('資料輸入不齊全，請輸入完整資�
 const VerifyError = new Unauthorized('驗證失敗，請重新登入')
 
 const errorHandler = (error, req, res, next) => {
+  if (error instanceof UniqueConstraintError) {
+    return res.status(409).json({
+      ok: 0,
+      message: error.original.sqlMessage
+    })
+  }
+
   if (error instanceof GeneralError) {
     return res.status(error.getStatus()).json({
       ok: 0,

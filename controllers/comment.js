@@ -1,6 +1,6 @@
 const db = require('../models')
-const { Comment } = db
-const { MissingError, GeneralError } = require('../middlewares/error')
+const { Comment, Issue } = db
+const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
 
 const commentController = {
   addComment: async (req, res) => {
@@ -87,6 +87,14 @@ const commentController = {
   },
   getAllComments: async (req, res) => {
     const { issueId } = req.params
+
+    const issue = await Issue.findOne({
+      where: {
+        id: Number(issueId)
+      }
+    })
+
+    if (!issue) throw new NotFound('找不到提問箱')
 
     const comments = await Comment.findAll({
       where: {

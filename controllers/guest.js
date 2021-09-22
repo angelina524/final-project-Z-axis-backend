@@ -1,5 +1,12 @@
+const dotenv = require('dotenv')
 const db = require('../models')
 const { Guest } = db
+
+const result = dotenv.config()
+if (result.error) {
+  throw result.error
+}
+const { GUEST_TOKEN_LENGTH } = result.parsed
 
 const generateRandomString = (num) => {
   const result = Math.random()
@@ -10,7 +17,7 @@ const generateRandomString = (num) => {
 
 const guestController = {
   createGuest: async (req, res) => {
-    const guestToken = generateRandomString(8)
+    const guestToken = generateRandomString(Number(GUEST_TOKEN_LENGTH))
 
     const guest = await Guest.create({
       guestToken

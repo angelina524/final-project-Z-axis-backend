@@ -15,9 +15,7 @@ module.exports = {
       email: {
         type: Sequelize.STRING(255),
         allowNull: false,
-        unique: {
-          msg: '此信箱已存在'
-        }
+        unique: true
       },
       password: {
         type: Sequelize.STRING(255),
