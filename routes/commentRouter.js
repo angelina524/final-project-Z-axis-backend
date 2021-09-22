@@ -34,5 +34,6 @@ commentRouter.patch(
   catchAsyncError(checkUserAuth),
   catchAsyncError(commentController.editReply)
 )
+commentRouter.get('/', catchAsyncError(commentController.getAllComments))
 
 module.exports = commentRouter

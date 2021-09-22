@@ -7,6 +7,7 @@ const { errorHandler } = require('./middlewares/error')
 const issueRouter = require('./routes/issueRouter')
 const userRouter = require('./routes/userRouter')
 const commentRouter = require('./routes/commentRouter')
+const guestRouter = require('./routes/guestRouter')
 
 const app = express()
 const result = dotenv.config()
@@ -24,6 +25,7 @@ app.use(cors())
 app.use('/users', userRouter)
 app.use('/issues', issueRouter)
 app.use('/issues/:issueId/comments', commentRouter)
+app.use('/guest', guestRouter)
 
 app.use(errorHandler)
 
