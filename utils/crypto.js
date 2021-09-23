@@ -14,12 +14,12 @@ const {
 function encrypt (text) {
   const cipher = crypto.createCipheriv(algorithm, key, iv)
   cipher.update(text, 'utf8')
-  return cipher.final('base64')
+  return cipher.final('hex')
 }
 
 function decrypt (text) {
   const cipher = crypto.createDecipheriv(algorithm, key, iv)
-  cipher.update(text, 'base64')
+  cipher.update(text, 'hex')
   return cipher.final('utf8')
 }
 

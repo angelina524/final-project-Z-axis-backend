@@ -26,7 +26,7 @@ issueRouter.patch(
 )
 issueRouter.get(
   '/',
-  catchAsyncError(checkUserAuth),
+  catchAsyncError(checkLoginAuth),
   catchAsyncError(issueController.getAll)
 )
 issueRouter.get('/:issueURL', catchAsyncError(issueController.getOne))
