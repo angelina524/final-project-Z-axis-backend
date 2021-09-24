@@ -19,7 +19,7 @@ const issueController = {
     if (!issue) throw new GeneralError('新增失敗')
     // encrypt: issueId => issueRUL
     const issueId = issue.id.toString()
-    const encoded = await encrypt(issueId)
+    const encoded = encrypt(issueId)
 
     res.status(200).json({
       ok: 1,
@@ -101,7 +101,7 @@ const issueController = {
 
   getOne: async (req, res) => {
     const { issueURL } = req.params
-    const issueId = await decrypt(issueURL)
+    const issueId = decrypt(issueURL)
     const issue = await Issue.findOne({
       where: {
         id: Number(issueId),

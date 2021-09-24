@@ -18,9 +18,9 @@ function encrypt (text) {
 }
 
 function decrypt (text) {
-  const cipher = crypto.createDecipheriv(algorithm, key, iv)
-  cipher.update(text, 'hex')
-  return cipher.final('utf8')
+  const decipher = crypto.createDecipheriv(algorithm, key, iv)
+  decipher.update(text, 'hex')
+  return decipher.final('utf8')
 }
 
 module.exports = { encrypt, decrypt }
