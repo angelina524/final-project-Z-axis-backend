@@ -14,13 +14,13 @@ const {
 function encrypt (text) {
   const cipher = crypto.createCipheriv(algorithm, key, iv)
   cipher.update(text, 'utf8')
-  return cipher.final('base64')
+  return cipher.final('hex')
 }
 
 function decrypt (text) {
-  const cipher = crypto.createDecipheriv(algorithm, key, iv)
-  cipher.update(text, 'base64')
-  return cipher.final('utf8')
+  const decipher = crypto.createDecipheriv(algorithm, key, iv)
+  decipher.update(text, 'hex')
+  return decipher.final('utf8')
 }
 
 module.exports = { encrypt, decrypt }
