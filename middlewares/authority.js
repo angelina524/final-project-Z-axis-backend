@@ -26,7 +26,7 @@ const JwtTokenToEmail = (token) => {
 
 // checkUser
 const getUserId = async (req) => {
-  const token = req.header('Authorization').replace('Bearer ', '')
+  const token = req.headers.authorization.replace('Bearer ', '')
   if (!token.trim()) throw new GeneralError('請先登入')
 
   const email = await JwtTokenToEmail(token)
@@ -115,8 +115,8 @@ const checkGuestToken = async (req, res, next) => {
 const checkGuestOrUserAuth = async (req, res, next) => {
   let userToken = null
   let guestToken = null
-  if (req.header('Authorization')) {
-    userToken = req.header('Authorization').replace('Bearer ', '')
+  if (req.headers.authorization) {
+    userToken = req.headers.authorization.replace('Bearer ', '')
   }
   if (req.headers['guest-token']) {
     guestToken = req.headers['guest-token']
@@ -133,11 +133,29 @@ const checkGuestOrUserAuth = async (req, res, next) => {
   throw new Unauthorized('未通過權限驗證，請確認權限')
 }
 
+const checkGuestTokenOrUserId = async (req, res, next) => {
+  let id = null
+  let guestToken = null
+  const { commentId } = req.params
+
+  if (req.headers.authorization) {
+    id = await getUserId(req)
+    res.locals.id = id
+  }
+  if (req.headers['guest-token']) {
+    guestToken = await getGuestToken(req.headers)
+    res.locals.guestToken = guestToken
+  }
+  if (!commentId) throw new NotFound('找不到此留言')
+  return next()
+}
+
 module.exports = {
   emailToJwtToken,
   checkLoginAuth,
   checkUserAuth,
   checkGuestToken,
   checkGuestAuth,
-  checkGuestOrUserAuth
+  checkGuestOrUserAuth,
+  checkGuestTokenOrUserId
 }
