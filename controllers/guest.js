@@ -1,4 +1,5 @@
 const dotenv = require('dotenv')
+const { GeneralError } = require('../middlewares/error')
 const db = require('../models')
 const { Guest } = db
 
@@ -27,7 +28,8 @@ const guestController = {
     res.status(200).json({
       ok: 1,
       message: '新增 guest 成功！',
-      guest
+      guest,
+      statusCode: 200
     })
   }
 }

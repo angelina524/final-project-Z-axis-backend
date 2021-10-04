@@ -23,22 +23,25 @@ const VerifyError = new Unauthorized('驗證失敗，請重新登入')
 
 const errorHandler = (error, req, res, next) => {
   if (error instanceof UniqueConstraintError) {
-    return res.status(409).json({
+    return res.status(200).json({
       ok: 0,
-      message: error.original.sqlMessage
+      message: error.original.sqlMessage,
+      statusCode: 409
     })
   }
 
   if (error instanceof GeneralError) {
-    return res.status(error.getStatus()).json({
+    return res.status(200).json({
       ok: 0,
-      message: error.message
+      message: error.message,
+      statusCode: error.getStatus()
     })
   }
 
-  return res.status(500).json({
+  return res.status(200).json({
     ok: 0,
-    message: error.message
+    message: error.message,
+    statusCode: 500
   })
 }
 
@@ -50,6 +53,7 @@ module.exports = {
   GeneralError,
   MissingError,
   VerifyError,
+  BadRequest,
   Unauthorized,
   NotFound,
   errorHandler,

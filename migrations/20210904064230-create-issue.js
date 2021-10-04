@@ -15,11 +15,11 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
-      beginTime: {
+      beginDate: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      finishTime: {
+      finishDate: {
         type: Sequelize.DATE,
         allowNull: false
       },

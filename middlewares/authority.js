@@ -26,7 +26,7 @@ const JwtTokenToEmail = (token) => {
 
 // checkUser
 const getUserId = async (req) => {
-  const token = req.header('Authorization').replace('Bearer ', '')
+  const token = req.headers.authorization.replace('Bearer ', '')
   if (!token.trim()) throw new GeneralError('請先登入')
 
   const email = await JwtTokenToEmail(token)
@@ -115,8 +115,8 @@ const checkGuestToken = async (req, res, next) => {
 const checkGuestOrUserAuth = async (req, res, next) => {
   let userToken = null
   let guestToken = null
-  if (req.header('Authorization')) {
-    userToken = req.header('Authorization').replace('Bearer ', '')
+  if (req.headers.authorization) {
+    userToken = req.headers.authorization.replace('Bearer ', '')
   }
   if (req.headers['guest-token']) {
     guestToken = req.headers['guest-token']

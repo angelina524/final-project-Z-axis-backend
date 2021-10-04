@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+    static associate (models) {
       // define association here
       Issue.belongsTo(models.User)
       Issue.hasMany(models.Comment)
@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
-      beginTime: DataTypes.DATE,
-      finishTime: DataTypes.DATE,
+      beginDate: DataTypes.DATE,
+      finishDate: DataTypes.DATE,
       isDeleted: DataTypes.BOOLEAN
     },
     {
