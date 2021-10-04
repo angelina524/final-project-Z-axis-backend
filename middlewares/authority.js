@@ -134,20 +134,37 @@ const checkGuestOrUserAuth = async (req, res, next) => {
 }
 
 const checkGuestTokenOrUserId = async (req, res, next) => {
-  let id = null
+  let userToken = null
   let guestToken = null
-  const { commentId } = req.params
 
   if (req.headers.authorization) {
-    id = await getUserId(req)
-    res.locals.id = id
+    userToken = req.headers.authorization.replace('Bearer ', '')
   }
   if (req.headers['guest-token']) {
-    guestToken = await getGuestToken(req.headers)
-    res.locals.guestToken = guestToken
+    guestToken = req.headers['guest-token']
   }
-  if (!commentId) throw new NotFound('找不到此留言')
-  return next()
+  if (userToken) {
+    const hasUser = await User.findOne({
+      where: {
+        userToken
+      }
+    })
+    if (hasUser) {
+      res.locals.id = hasUser.id
+    }
+  }
+  if (guestToken) {
+    const hasGuest = await Guest.findOne({
+      where: {
+        guestToken
+      }
+    })
+    if (hasGuest) {
+      res.locals.guestToken = hasGuest.guestToken
+      return next()
+    }
+  }
+  throw new Unauthorized('未通過權限驗證，請確認權限')
 }
 
 module.exports = {

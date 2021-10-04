@@ -22,7 +22,7 @@ issueRouter.patch(
 issueRouter.patch(
   '/:issueId/pinCommentOnTop',
   catchAsyncError(checkUserAuth),
-  catchAsyncError(issueController.pinCommentOnTop) // 待補：置頂 controller + 資料庫欄位
+  catchAsyncError(issueController.pinCommentOnTop)
 )
 issueRouter.get(
   '/',

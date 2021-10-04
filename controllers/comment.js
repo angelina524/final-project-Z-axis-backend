@@ -116,24 +116,45 @@ const commentController = {
         id: Number(commentId)
       }
     })
-
     const { likesNum } = comment
 
-    if (userId) {
-      const compareLiked = await GuestsCommentsRelation.findOne({
-        where: {
-          userId,
-          commentId
-        }
-      })
-      if (!compareLiked) {
-        await GuestsCommentsRelation.create({
+    if (!comment) throw new NotFound('找不到此留言')
+
+    const createData = async (data) => {
+      if (data === 'userId') {
+        GuestsCommentsRelation.create({
           UserId: Number(userId),
           guestToken,
           commentId
         })
-
-        await Comment.update(
+      } else {
+        GuestsCommentsRelation.create({
+          UserId: null,
+          guestToken,
+          commentId
+        })
+      }
+    }
+    const deleteData = async (data) => {
+      if (data === 'userId') {
+        GuestsCommentsRelation.destroy({
+          where: {
+            userId,
+            commentId
+          }
+        })
+      } else {
+        GuestsCommentsRelation.destroy({
+          where: {
+            guestToken,
+            commentId
+          }
+        })
+      }
+    }
+    const likesOrUnLikedComment = async (data) => {
+      if (data === 'likes') {
+        Comment.update(
           {
             likesNum: Number(likesNum) + 1
           },
@@ -143,18 +164,8 @@ const commentController = {
             }
           }
         )
-        res.status(200).json({
-          ok: 1,
-          message: '登入者按讚成功！'
-        })
       } else {
-        await GuestsCommentsRelation.destroy({
-          where: {
-            userId,
-            commentId
-          }
-        })
-        await Comment.update(
+        Comment.update(
           {
             likesNum: Number(likesNum) - 1
           },
@@ -164,84 +175,58 @@ const commentController = {
             }
           }
         )
+      }
+    }
+
+    if (userId) {
+      const isLiked = await GuestsCommentsRelation.findOne({
+        where: {
+          userId,
+          commentId
+        }
+      })
+      if (!isLiked) {
+        await createData('userId')
+        await likesOrUnLikedComment('likes')
+
+        res.status(200).json({
+          ok: 1,
+          message: '登入者按讚成功！'
+        })
+      } else {
+        await deleteData('userId')
+        await likesOrUnLikedComment('unLiked')
+
         res.status(200).json({
           ok: 1,
           message: '登入者收回讚成功！'
         })
       }
     } else if (guestToken) {
-      const compareLiked = await GuestsCommentsRelation.findOne({
+      const isLiked = await GuestsCommentsRelation.findOne({
         where: {
           guestToken,
           commentId
         }
       })
-      if (!compareLiked) {
-        await GuestsCommentsRelation.create({
-          UserId: null,
-          guestToken,
-          commentId
-        })
+      if (!isLiked) {
+        await createData('guestToken')
+        await likesOrUnLikedComment('likes')
 
-        await Comment.update(
-          {
-            likesNum: Number(likesNum) + 1
-          },
-          {
-            where: {
-              id: Number(commentId)
-            }
-          }
-        )
         res.status(200).json({
           ok: 1,
           message: '訪客按讚成功！'
         })
       } else {
-        await GuestsCommentsRelation.destroy({
-          where: {
-            guestToken,
-            commentId
-          }
-        })
-        await Comment.update(
-          {
-            likesNum: Number(likesNum) - 1
-          },
-          {
-            where: {
-              id: Number(commentId)
-            }
-          }
-        )
+        await deleteData('guestToken')
+        await likesOrUnLikedComment('unLiked')
+
         res.status(200).json({
           ok: 1,
           message: '訪客收回讚成功！'
         })
       }
     }
-  },
-  commentOnTop: async (req, res) => {
-    const { issueId, commentId } = req.params
-
-    const response = await Issue.update(
-      {
-        topCommentId: Number(commentId)
-      },
-      {
-        where: {
-          id: Number(issueId),
-          isDeleted: 0
-        }
-      }
-    )
-    console.log(response)
-    if (!response[0]) throw new GeneralError('置頂失敗！')
-
-    res.status(200).json({
-      ok: 1,
-      message: '置頂成功！'
-    })
   }
 }
 

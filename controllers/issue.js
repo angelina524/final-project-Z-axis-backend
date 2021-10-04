@@ -113,6 +113,28 @@ const issueController = {
       ok: 1,
       issue
     })
+  },
+  pinCommentOnTop: async (req, res) => {
+    const { issueId, commentId } = req.params
+
+    const response = await Issue.update(
+      {
+        topCommentId: Number(commentId)
+      },
+      {
+        where: {
+          id: Number(issueId),
+          isDeleted: 0
+        }
+      }
+    )
+
+    if (!response[0]) throw new GeneralError('置頂失敗！')
+
+    res.status(200).json({
+      ok: 1,
+      message: '置頂成功！'
+    })
   }
 }
 

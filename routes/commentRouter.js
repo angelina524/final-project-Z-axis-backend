@@ -28,12 +28,7 @@ commentRouter.patch(
 commentRouter.patch(
   '/:commentId/likes',
   catchAsyncError(checkGuestTokenOrUserId),
-  catchAsyncError(commentController.likesComment) // 待補：按讚 controller
-)
-commentRouter.patch(
-  '/:commentId/top',
-  catchAsyncError(checkUserAuth),
-  catchAsyncError(commentController.commentOnTop)
+  catchAsyncError(commentController.likesComment)
 )
 commentRouter.patch(
   '/:commentId/replies',
