@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Comment, Issue } = db
+const { Comment, Issue, GuestsCommentsRelation } = db
 const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
 
 const commentController = {
@@ -110,6 +110,128 @@ const commentController = {
       comments,
       statusCode: 200
     })
+  },
+  likesComment: async (req, res) => {
+    const userId = res.locals.id
+    const guestToken = res.locals.guestToken
+    const { commentId } = req.params
+
+    const comment = await Comment.findOne({
+      where: {
+        id: Number(commentId)
+      }
+    })
+    if (!comment) throw new NotFound('找不到此留言')
+
+    const { likesNum } = comment
+
+    const createData = async (data) => {
+      if (data === 'userId') {
+        GuestsCommentsRelation.create({
+          UserId: Number(userId),
+          guestToken,
+          commentId
+        })
+      } else {
+        GuestsCommentsRelation.create({
+          UserId: null,
+          guestToken,
+          commentId
+        })
+      }
+    }
+    const deleteData = async (data) => {
+      if (data === 'userId') {
+        GuestsCommentsRelation.destroy({
+          where: {
+            userId,
+            commentId
+          }
+        })
+      } else {
+        GuestsCommentsRelation.destroy({
+          where: {
+            guestToken,
+            commentId
+          }
+        })
+      }
+    }
+    const likesOrUnLikedComment = async (data) => {
+      if (data === 'likes') {
+        Comment.update(
+          {
+            likesNum: Number(likesNum) + 1
+          },
+          {
+            where: {
+              id: Number(commentId)
+            }
+          }
+        )
+      } else {
+        Comment.update(
+          {
+            likesNum: Number(likesNum) - 1
+          },
+          {
+            where: {
+              id: Number(commentId)
+            }
+          }
+        )
+      }
+    }
+
+    if (userId) {
+      const isLiked = await GuestsCommentsRelation.findOne({
+        where: {
+          userId,
+          commentId
+        }
+      })
+      if (!isLiked) {
+        await createData('userId')
+        await likesOrUnLikedComment('likes')
+
+        res.status(200).json({
+          ok: 1,
+          message: '按讚成功！'
+        })
+      } else {
+        await deleteData('userId')
+        await likesOrUnLikedComment('unLiked')
+
+        res.status(200).json({
+          ok: 1,
+          message: '收回按讚！'
+        })
+      }
+    } else if (guestToken) {
+      const isLiked = await GuestsCommentsRelation.findOne({
+        where: {
+          guestToken,
+          commentId
+        }
+      })
+      if (!isLiked) {
+        await createData('guestToken')
+        await likesOrUnLikedComment('likes')
+
+        res.status(200).json({
+          ok: 1,
+          message: '按讚成功！'
+        })
+      } else {
+        await deleteData('guestToken')
+        await likesOrUnLikedComment('unLiked')
+
+        res.status(200).json({
+          ok: 1,
+          message: '收回按讚！'
+        })
+      }
+    }
   }
 }
 

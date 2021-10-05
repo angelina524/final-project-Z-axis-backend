@@ -2,6 +2,7 @@ const dotenv = require('dotenv')
 const { GeneralError } = require('../middlewares/error')
 const db = require('../models')
 const { Guest } = db
+const { GeneralError } = require('../middlewares/error')
 
 const result = dotenv.config()
 if (result.error) {

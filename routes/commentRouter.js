@@ -6,7 +6,8 @@ const {
   checkGuestToken,
   checkGuestAuth,
   checkUserAuth,
-  checkGuestOrUserAuth
+  checkGuestOrUserAuth,
+  checkGuestTokenOrUserId
 } = require('../middlewares/authority')
 
 commentRouter.post(
@@ -26,8 +27,8 @@ commentRouter.patch(
 )
 commentRouter.patch(
   '/:commentId/likes',
-  catchAsyncError(checkGuestToken),
-  catchAsyncError(commentController.likesComment) // 待補：按讚 controller
+  catchAsyncError(checkGuestTokenOrUserId),
+  catchAsyncError(commentController.likesComment)
 )
 commentRouter.patch(
   '/:commentId/replies',
