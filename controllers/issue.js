@@ -17,11 +17,11 @@ const validateDateRange = (beginDate, finishDate) => {
   if (!finishDate) return false
   const dateRange =
     (new Date(finishDate) - new Date(beginDate)) / (86400 * 1000)
-  return dateRange <= 5 && dateRange >= 0
+  return dateRange <= 4 && dateRange >= 0
 }
 
 const resetFinishDate = (date) => {
-  const finishDate = new Date(new Date(date).getTime() + 5 * 86400 * 1000)
+  const finishDate = new Date(new Date(date).getTime() + 4 * 86400 * 1000)
   return finishDate.toISOString().substring(0, 10)
 }
 
@@ -117,7 +117,7 @@ const issueController = {
 
   getAll: async (req, res) => {
     const { limit } = req.query
-    if (/\D/.test(limit)) throw new BadRequest('limit 必須是正整數')
+    if (limit && /\D/.test(limit)) throw new BadRequest('limit 必須是正整數')
     const userId = res.locals.id
     const issues = await Issue.findAll({
       where: {
@@ -125,7 +125,8 @@ const issueController = {
         isDeleted: 0
       },
       limit: Number(limit),
-      include: Comment
+      include: Comment,
+      order: [['beginDate', 'DESC']]
     })
 
     const issuesWithURL = issues.map((issue) => {
