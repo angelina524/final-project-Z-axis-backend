@@ -140,6 +140,7 @@ const issueController = {
 
     res.status(200).json({
       ok: 1,
+      message: '置頂成功',
       comment
     })
   },
