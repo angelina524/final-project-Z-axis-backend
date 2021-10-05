@@ -26,7 +26,7 @@ const JwtTokenToEmail = (token) => {
 
 // checkUser
 const getUserId = async (req) => {
-  const token = req.header('Authorization').replace('Bearer ', '')
+  const token = req.headers.authorization.replace('Bearer ', '')
   if (!token.trim()) throw new GeneralError('請先登入')
 
   const email = await JwtTokenToEmail(token)
@@ -115,8 +115,8 @@ const checkGuestToken = async (req, res, next) => {
 const checkGuestOrUserAuth = async (req, res, next) => {
   let userToken = null
   let guestToken = null
-  if (req.header('Authorization')) {
-    userToken = req.header('Authorization').replace('Bearer ', '')
+  if (req.headers.authorization) {
+    userToken = req.headers.authorization.replace('Bearer ', '')
   }
   if (req.headers['guest-token']) {
     guestToken = req.headers['guest-token']
@@ -133,11 +133,48 @@ const checkGuestOrUserAuth = async (req, res, next) => {
   throw new Unauthorized('未通過權限驗證，請確認權限')
 }
 
+const checkGuestTokenOrUserId = async (req, res, next) => {
+  let userToken = null
+  let guestToken = null
+
+  if (req.headers.authorization) {
+    userToken = req.headers.authorization.replace('Bearer ', '')
+  }
+  if (req.headers['guest-token']) {
+    guestToken = req.headers['guest-token']
+  }
+  if (userToken) {
+    const hasUser = await User.findOne({
+      where: {
+        userToken,
+        isDeleted: 0
+      }
+    })
+    if (hasUser) {
+      res.locals.id = hasUser.id
+      return next()
+    }
+  }
+  if (guestToken) {
+    const hasGuest = await Guest.findOne({
+      where: {
+        guestToken
+      }
+    })
+    if (hasGuest) {
+      res.locals.guestToken = hasGuest.guestToken
+      return next()
+    }
+  }
+  throw new Unauthorized('未通過權限驗證，請確認權限')
+}
+
 module.exports = {
   emailToJwtToken,
   checkLoginAuth,
   checkUserAuth,
   checkGuestToken,
   checkGuestAuth,
-  checkGuestOrUserAuth
+  checkGuestOrUserAuth,
+  checkGuestTokenOrUserId
 }
