@@ -116,9 +116,9 @@ const commentController = {
         id: Number(commentId)
       }
     })
-    const { likesNum } = comment
-
     if (!comment) throw new NotFound('找不到此留言')
+
+    const { likesNum } = comment
 
     const createData = async (data) => {
       if (data === 'userId') {
@@ -191,7 +191,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '登入者按讚成功！'
+          message: '按讚成功！'
         })
       } else {
         await deleteData('userId')
@@ -199,7 +199,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '登入者收回讚成功！'
+          message: '收回按讚！'
         })
       }
     } else if (guestToken) {
@@ -215,7 +215,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '訪客按讚成功！'
+          message: '按讚成功！'
         })
       } else {
         await deleteData('guestToken')
@@ -223,7 +223,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '訪客收回讚成功！'
+          message: '收回按讚！'
         })
       }
     }

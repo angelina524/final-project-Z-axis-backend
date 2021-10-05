@@ -146,11 +146,13 @@ const checkGuestTokenOrUserId = async (req, res, next) => {
   if (userToken) {
     const hasUser = await User.findOne({
       where: {
-        userToken
+        userToken,
+        isDeleted: 0
       }
     })
     if (hasUser) {
       res.locals.id = hasUser.id
+      return next()
     }
   }
   if (guestToken) {

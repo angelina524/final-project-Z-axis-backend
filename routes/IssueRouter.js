@@ -24,6 +24,11 @@ issueRouter.patch(
   catchAsyncError(checkUserAuth),
   catchAsyncError(issueController.pinCommentOnTop)
 )
+issueRouter.patch(
+  '/:issueId/unpinCommentOnTop',
+  catchAsyncError(checkUserAuth),
+  catchAsyncError(issueController.unpinCommentOnTop)
+)
 issueRouter.get(
   '/',
   catchAsyncError(checkUserAuth),

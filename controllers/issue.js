@@ -1,5 +1,5 @@
 const db = require('../models')
-const { Issue } = db
+const { Issue, Comment } = db
 const { MissingError, GeneralError, NotFound } = require('../middlewares/error')
 const { encrypt, decrypt } = require('../utils/crypto')
 
@@ -115,11 +115,20 @@ const issueController = {
     })
   },
   pinCommentOnTop: async (req, res) => {
-    const { issueId, commentId } = req.params
+    const { issueId } = req.params
+    const { commentId } = req.body
 
-    const response = await Issue.update(
+    const comment = await Comment.findOne({
+      where: {
+        id: Number(commentId),
+        IssueId: Number(issueId)
+      }
+    })
+    if (!comment) throw new NotFound('找不到此留言')
+
+    await Issue.update(
       {
-        topCommentId: Number(commentId)
+        topCommentId: comment.id
       },
       {
         where: {
@@ -129,11 +138,28 @@ const issueController = {
       }
     )
 
-    if (!response[0]) throw new GeneralError('置頂失敗！')
-
     res.status(200).json({
       ok: 1,
-      message: '置頂成功！'
+      comment
+    })
+  },
+  unpinCommentOnTop: async (req, res) => {
+    const { issueId } = req.params
+
+    await Issue.update(
+      {
+        topCommentId: 0
+      },
+      {
+        where: {
+          id: Number(issueId),
+          isDeleted: 0
+        }
+      }
+    )
+    res.status(200).json({
+      ok: 1,
+      message: '取消置頂成功'
     })
   }
 }
