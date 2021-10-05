@@ -16,11 +16,11 @@ const commentController = {
       IssueId: Number(issueId),
       guestToken
     })
-    if (!comment) throw new GeneralError('新增留言失敗！')
+    if (!comment) throw new GeneralError('新增留言失敗')
 
     res.status(200).json({
       ok: 1,
-      message: '新增留言成功！',
+      message: '新增留言成功',
       comment,
       statusCode: 200
     })
@@ -33,11 +33,11 @@ const commentController = {
         id: Number(commentId)
       }
     })
-    if (!response) throw new GeneralError('刪除留言失敗！')
+    if (!response) throw new GeneralError('刪除留言失敗')
 
     res.status(200).json({
       ok: 1,
-      message: '刪除留言成功！',
+      message: '刪除留言成功',
       statusCode: 200
     })
   },
@@ -57,11 +57,11 @@ const commentController = {
         }
       }
     )
-    if (!comment[0]) throw new GeneralError('編輯留言失敗！')
+    if (!comment[0]) throw new GeneralError('編輯留言失敗')
 
     res.status(200).json({
       ok: 1,
-      message: '編輯留言成功！',
+      message: '編輯留言成功',
       statusCode: 200
     })
   },
@@ -80,11 +80,11 @@ const commentController = {
         }
       }
     )
-    if (!response) throw new GeneralError('編輯回覆失敗！')
+    if (!response) throw new GeneralError('編輯回覆失敗')
 
     res.status(200).json({
       ok: 1,
-      message: '編輯回覆成功！',
+      message: '編輯回覆成功',
       statusCode: 200
     })
   },

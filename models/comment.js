@@ -20,7 +20,6 @@ module.exports = (sequelize, DataTypes) => {
       nickname: DataTypes.STRING,
       content: DataTypes.TEXT,
       likesNum: DataTypes.INTEGER,
-      isResolved: DataTypes.BOOLEAN,
       reply: DataTypes.TEXT,
       replyCreateAt: DataTypes.DATE
     },

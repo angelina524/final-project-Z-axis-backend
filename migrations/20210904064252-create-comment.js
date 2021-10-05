@@ -21,11 +21,6 @@ module.exports = {
         defaultValue: 0,
         allowNull: false
       },
-      isResolved: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: 0,
-        allowNull: false
-      },
       reply: {
         type: Sequelize.TEXT
       },
