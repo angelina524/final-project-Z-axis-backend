@@ -48,7 +48,8 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      token
+      token,
+      statusCode: 200
     })
   },
   login: async (req, res) => {
@@ -66,12 +67,14 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      token: user.userToken
+      token: user.userToken,
+      statusCode: 200
     })
   },
   getOneProfile: async (req, res) => {
     const id = res.locals.id
     const user = await User.findOne({
+      attributes: ['id', 'nickname', 'email'],
       where: {
         id,
         isDeleted: 0
@@ -81,10 +84,8 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      user: {
-        nickname: user.nickname,
-        email: user.email
-      }
+      user,
+      statusCode: 200
     })
   },
   editProfile: async (req, res) => {
@@ -111,14 +112,17 @@ const userController = {
     return res.status(200).json({
       ok: 1,
       message: '個人資訊更新成功',
-      token: newToken
+      token: newToken,
+      statusCode: 200
     })
   },
   updatePassword: async (req, res) => {
     const { oldPassword, newPassword, againPassword } = req.body
     if (!oldPassword || !newPassword || !againPassword) throw MissingError
     if (!isPasswordFormatValid(oldPassword)) {
-      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+      throw new GeneralError(
+        '密碼格式錯誤，長度需為 8 以上並包含小寫英文字母、數字'
+      )
     }
     const id = res.locals.id
     const user = await User.findOne({
@@ -131,7 +135,9 @@ const userController = {
     const passwordIsValid = await bcrypt.compare(oldPassword, user.password)
     if (!passwordIsValid) throw new GeneralError('密碼錯誤，請再次確認')
     if (!isPasswordFormatValid(newPassword)) {
-      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+      throw new GeneralError(
+        '密碼格式錯誤，長度需為 8 以上並包含小寫英文字母、數字'
+      )
     }
     if (newPassword !== againPassword) {
       throw new GeneralError('兩次密碼輸入不一致')
@@ -152,7 +158,8 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      message: '密碼更新成功'
+      message: '密碼更新成功',
+      statusCode: 200
     })
   },
   delete: async (req, res) => {
@@ -172,7 +179,8 @@ const userController = {
 
     return res.status(200).json({
       ok: 1,
-      message: '刪除成功'
+      message: '刪除成功',
+      statusCode: 200
     })
   }
 }

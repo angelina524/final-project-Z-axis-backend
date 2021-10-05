@@ -1,7 +1,7 @@
 const dotenv = require('dotenv')
+const { GeneralError } = require('../middlewares/error')
 const db = require('../models')
 const { Guest } = db
-const { GeneralError } = require('../middlewares/error')
 
 const result = dotenv.config()
 if (result.error) {
@@ -23,12 +23,13 @@ const guestController = {
     const guest = await Guest.create({
       guestToken
     })
-    if (!guest) throw new GeneralError('新增 guest 失敗！')
+    if (!guest) throw new GeneralError('新增 guest 失敗')
 
     res.status(200).json({
       ok: 1,
-      message: '新增 guest 成功！',
-      guest
+      message: '新增 guest 成功',
+      guest,
+      statusCode: 200
     })
   }
 }
