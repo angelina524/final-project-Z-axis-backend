@@ -21,8 +21,8 @@ const validateDateRange = (beginDate, finishDate) => {
 }
 
 const resetFinishDate = (date) => {
-  const finishDate = new Date(Date.UTC(...date.split('-')) + 5 * 86400 * 1000)
-  return `${finishDate.getFullYear()}-${finishDate.getMonth()}-${finishDate.getDate()}`
+  const finishDate = new Date(new Date(date).getTime() + 5 * 86400 * 1000)
+  return finishDate.toISOString().substring(0, 10)
 }
 
 const issueController = {
