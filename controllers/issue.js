@@ -40,8 +40,7 @@ const issueController = {
     const issue = await Issue.create({
       title,
       description,
-      // 日期的預期格式為 YYYY-MM-DD，如果輸入像 2021-10-4 的日期，到資料庫會變成預期外的日期，所以要補 0
-      beginDate: beginDate,
+      beginDate,
       finishDate: validatedFinishDate,
       UserId: Number(userId)
     })
@@ -84,16 +83,21 @@ const issueController = {
 
   patch: async (req, res) => {
     const userId = res.locals.id
-    const { title, description, beginDate, finishDate } = req.body
-    // description allow null value
-    if (!title || !beginDate || !finishDate) throw MissingError
     const { issueId } = req.params
+    const { title, description, beginDate, finishDate } = req.body
+    if (!title || !beginDate) throw MissingError
+    if (!validateDate(beginDate) || (finishDate && !validateDate(finishDate))) {
+      throw new BadRequest('合法日期格式為 YYYY-MM-DD')
+    }
+    const validatedFinishDate = validateDateRange(beginDate, finishDate)
+      ? finishDate
+      : resetFinishDate(beginDate)
     const updatedResult = await Issue.update(
       {
         title,
         description,
         beginDate,
-        finishDate
+        finishDate: validatedFinishDate
       },
       {
         where: {
@@ -113,7 +117,7 @@ const issueController = {
 
   getAll: async (req, res) => {
     const { limit } = req.query
-    if (/\D/.test(limit)) throw new BadRequest('limit 必須是數字')
+    if (/\D/.test(limit)) throw new BadRequest('limit 必須是正整數')
     const userId = res.locals.id
     const issues = await Issue.findAll({
       where: {
