@@ -46,8 +46,8 @@ Z-axis 提供即時匿名留言、按讚投票、測驗互動、抽獎活動、�
   - CRYPTO_ALGORITHM(string)
   - CRYPTO_KEY(string)
   - CRYPTO_IV(string)
-4. 輸入指令 `npx sequelize-cli db:migrate 執行 Sequelize migration`，在 MySQL 資料庫中建立 table
-5. 輸入指令 `npx sequelize-cli db:seed:all 以執行 Sequelize seeders` 以在資料庫中建立初始 demo 資料
+4. 輸入指令 `npx sequelize-cli db:migrate` 執行 Sequelize migration，在 MySQL 資料庫中建立 table
+5. 輸入指令 `npx sequelize-cli db:seed:all` 以執行 Sequelize seeders 以在資料庫中建立初始 demo 資料
 
 ## 開發
 1. `npm run start`
