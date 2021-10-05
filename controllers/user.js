@@ -120,7 +120,9 @@ const userController = {
     const { oldPassword, newPassword, againPassword } = req.body
     if (!oldPassword || !newPassword || !againPassword) throw MissingError
     if (!isPasswordFormatValid(oldPassword)) {
-      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+      throw new GeneralError(
+        '密碼格式錯誤，長度需為 8 以上並包含小寫英文字母、數字'
+      )
     }
     const id = res.locals.id
     const user = await User.findOne({
@@ -133,7 +135,9 @@ const userController = {
     const passwordIsValid = await bcrypt.compare(oldPassword, user.password)
     if (!passwordIsValid) throw new GeneralError('密碼錯誤，請再次確認')
     if (!isPasswordFormatValid(newPassword)) {
-      throw new GeneralError('密碼格式錯誤，需包含英文、數字')
+      throw new GeneralError(
+        '密碼格式錯誤，長度需為 8 以上並包含小寫英文字母、數字'
+      )
     }
     if (newPassword !== againPassword) {
       throw new GeneralError('兩次密碼輸入不一致')
