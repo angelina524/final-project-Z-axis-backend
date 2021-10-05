@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.addColumn('issues', 'userId', {
+    await queryInterface.addColumn('Issues', 'userId', {
       type: Sequelize.INTEGER,
       allowNull: false,
       reference: {
@@ -12,7 +12,7 @@ module.exports = {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
     })
-    await queryInterface.addColumn('comments', 'issueId', {
+    await queryInterface.addColumn('Comments', 'issueId', {
       type: Sequelize.INTEGER,
       allowNull: false,
       reference: {
@@ -22,7 +22,7 @@ module.exports = {
       onUpdate: 'CASCADE',
       onDelete: 'SET NULL'
     })
-    await queryInterface.addColumn('comments', 'guestToken', {
+    await queryInterface.addColumn('Comments', 'guestToken', {
       type: Sequelize.STRING,
       allowNull: false,
       reference: {
@@ -35,8 +35,8 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.removeColumn('issues', 'userId')
-    await queryInterface.removeColumn('comments', 'issueId')
-    await queryInterface.removeColumn('comments', 'guestToken')
+    await queryInterface.removeColumn('Issues', 'userId')
+    await queryInterface.removeColumn('Comments', 'issueId')
+    await queryInterface.removeColumn('Comments', 'guestToken')
   }
 }

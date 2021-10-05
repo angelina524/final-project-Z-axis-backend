@@ -157,6 +157,55 @@ const issueController = {
       issue,
       statusCode: 200
     })
+  },
+  pinCommentOnTop: async (req, res) => {
+    const { issueId } = req.params
+    const { commentId } = req.body
+
+    const comment = await Comment.findOne({
+      where: {
+        id: Number(commentId),
+        IssueId: Number(issueId)
+      }
+    })
+    if (!comment) throw new NotFound('找不到此留言')
+
+    await Issue.update(
+      {
+        topCommentId: comment.id
+      },
+      {
+        where: {
+          id: Number(issueId),
+          isDeleted: 0
+        }
+      }
+    )
+
+    res.status(200).json({
+      ok: 1,
+      message: '置頂成功',
+      comment
+    })
+  },
+  unpinCommentOnTop: async (req, res) => {
+    const { issueId } = req.params
+
+    await Issue.update(
+      {
+        topCommentId: 0
+      },
+      {
+        where: {
+          id: Number(issueId),
+          isDeleted: 0
+        }
+      }
+    )
+    res.status(200).json({
+      ok: 1,
+      message: '取消置頂成功'
+    })
   }
 }
 
