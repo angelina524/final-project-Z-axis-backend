@@ -28,7 +28,6 @@ const commentController = {
 
   deleteComment: async (req, res) => {
     const { commentId } = req.params
-    console.log(commentId)
 
     const response = await Comment.destroy({
       where: {
@@ -66,7 +65,6 @@ const commentController = {
         id: Number(commentId)
       }
     })
-    console.log(updateComment)
 
     res.status(200).json({
       ok: 1,
