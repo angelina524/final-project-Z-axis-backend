@@ -59,7 +59,7 @@ const commentController = {
         }
       }
     )
-    if (!comment[0]) throw new GeneralError('編輯留言失敗！')
+    if (!comment[0]) throw new GeneralError('編輯留言失敗')
     const updateComment = await Comment.findOne({
       where: {
         id: Number(commentId)
@@ -204,7 +204,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '按讚成功！'
+          message: '按讚成功'
         })
       } else {
         await deleteData('userId')
@@ -212,7 +212,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '收回按讚！'
+          message: '收回按讚'
         })
       }
     } else if (guestToken) {
@@ -228,7 +228,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '按讚成功！'
+          message: '按讚成功'
         })
       } else {
         await deleteData('guestToken')
@@ -236,7 +236,7 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '收回按讚！'
+          message: '收回按讚'
         })
       }
     }
