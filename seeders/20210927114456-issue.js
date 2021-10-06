@@ -26,7 +26,7 @@ const issues = [
     description:
       '烈日炎炎的夏日，面對大魚大肉都沒什麼食慾，熱到發燙的日子就需要這些清涼微酸，解解夏天的渴！',
     beginDate: new Date(new Date().getTime() - 86400 * 1000 * 4),
-    finishDate: new Date(new Date().getTime() + 86400 * 1000 * 2),
+    finishDate: new Date(new Date().getTime() - 86400 * 1000 * 2),
     UserId: 3,
     createdAt: new Date(),
     updatedAt: new Date()
