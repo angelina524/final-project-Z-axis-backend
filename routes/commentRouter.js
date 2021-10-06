@@ -18,7 +18,6 @@ commentRouter.post(
 commentRouter.delete(
   '/:commentId',
   catchAsyncError(checkGuestOrUserAuth),
-  catchAsyncError(checkGuestOrUserAuth),
   catchAsyncError(commentController.deleteComment)
 )
 commentRouter.patch(
