@@ -17,8 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       description: DataTypes.TEXT,
-      beginTime: DataTypes.DATE,
-      finishTime: DataTypes.DATE,
+      beginDate: DataTypes.DATE,
+      finishDate: DataTypes.DATE,
       isDeleted: DataTypes.BOOLEAN,
       topCommentId: DataTypes.INTEGER
     },
