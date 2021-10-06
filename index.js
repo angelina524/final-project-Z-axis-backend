@@ -1,6 +1,18 @@
 const express = require('express')
 const dotenv = require('dotenv')
 const cors = require('cors')
+const app = express()
+
+// socket.io config
+const http = require('http')
+const server = http.createServer(app)
+const { Server } = require('socket.io')
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'UPDATE', 'DELETE']
+  }
+})
 
 const { errorHandler } = require('./middlewares/error')
 
@@ -9,7 +21,6 @@ const userRouter = require('./routes/userRouter')
 const commentRouter = require('./routes/commentRouter')
 const guestRouter = require('./routes/guestRouter')
 
-const app = express()
 const result = dotenv.config()
 if (result.error) {
   throw result.error
@@ -29,6 +40,22 @@ app.use('/guest', guestRouter)
 
 app.use(errorHandler)
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+// socket.io
+io.on('connection', (socket) => {
+  socket.on('joinIssue', (issueId) => {
+    socket.join(issueId)
+  })
+  socket.on('addComment', (comment) => {
+    socket.to(comment.IssueId).emit('addComment', comment)
+  })
+  socket.on('updateComment', (comment) => {
+    socket.to(comment.IssueId).emit('updateComment', comment)
+  })
+  socket.on('deleteComment', ({ IssueId, id }) => {
+    socket.to(IssueId).emit('deleteComment', id)
+  })
+})
+
+server.listen(port, () => {
+  console.log(`App listening at http://localhost:${port}`)
 })
