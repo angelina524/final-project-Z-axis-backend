@@ -29,7 +29,7 @@ const comments = [
     nickname: '秘境遊俠',
     content: '清水斷崖，可以體驗立槳 SUP，享受徜徉在太平洋上的壯闊景色',
     likesNum: 10,
-    reply: '上個月剛好有去玩，立槳超刺激，教練很會拍照',
+    reply: '上個月剛好有去玩，立槳超好玩，教練很會拍照',
     replyCreateAt: new Date(),
     issueId: 2,
     guestToken: 'didi',

@@ -5,8 +5,8 @@ const issues = [
     title: '祈念之樹留言箱',
     description:
       '你相信像樟樹祈念，願望就能成真嗎？有沒有什麼思念，害怕說出來？有沒有什麼秘密，想要坦白卻無法開口？有沒有什麼歉意懊悔，已經來不及表達？如果這棵樟樹此刻在面前，你會許下什麼願望？',
-    beginDate: new Date(new Date().getTime() - 86400 * 1000 * 2),
-    finishDate: new Date(new Date().getTime() + 86400 * 1000 * 2),
+    beginDate: new Date(new Date().getTime() + 86400 * 1000 * 1),
+    finishDate: new Date(new Date().getTime() + 86400 * 1000 * 5),
     UserId: 1,
     createdAt: new Date(),
     updatedAt: new Date()
@@ -25,8 +25,8 @@ const issues = [
     title: '盛夏解暑聖品',
     description:
       '烈日炎炎的夏日，面對大魚大肉都沒什麼食慾，熱到發燙的日子就需要這些清涼微酸，解解夏天的渴！',
-    beginDate: new Date(new Date().getTime()),
-    finishDate: new Date(new Date().getTime() + 86400 * 1000 * 4),
+    beginDate: new Date(new Date().getTime() - 86400 * 1000 * 4),
+    finishDate: new Date(new Date().getTime() + 86400 * 1000 * 2),
     UserId: 3,
     createdAt: new Date(),
     updatedAt: new Date()
