@@ -204,7 +204,8 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '按讚成功'
+          message: '按讚成功',
+          statusCode: 200
         })
       } else {
         await deleteData('userId')
@@ -212,7 +213,8 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '收回按讚'
+          message: '收回按讚',
+          statusCode: 200
         })
       }
     } else if (guestToken) {
@@ -228,7 +230,8 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '按讚成功'
+          message: '按讚成功',
+          statusCode: 200
         })
       } else {
         await deleteData('guestToken')
@@ -236,7 +239,8 @@ const commentController = {
 
         res.status(200).json({
           ok: 1,
-          message: '收回按讚'
+          message: '收回按讚',
+          statusCode: 200
         })
       }
     }

@@ -185,7 +185,8 @@ const issueController = {
     res.status(200).json({
       ok: 1,
       message: '置頂成功',
-      comment
+      comment,
+      statusCode: 200
     })
   },
   unpinCommentOnTop: async (req, res) => {
@@ -204,7 +205,8 @@ const issueController = {
     )
     res.status(200).json({
       ok: 1,
-      message: '取消置頂成功'
+      message: '取消置頂成功',
+      statusCode: 200
     })
   }
 }
