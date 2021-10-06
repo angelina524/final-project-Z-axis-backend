@@ -25,6 +25,7 @@ const commentController = {
       statusCode: 200
     })
   },
+
   deleteComment: async (req, res) => {
     const { commentId } = req.params
 
@@ -41,6 +42,7 @@ const commentController = {
       statusCode: 200
     })
   },
+
   editComment: async (req, res) => {
     const { nickname, content } = req.body
     const { commentId } = req.params
@@ -58,11 +60,17 @@ const commentController = {
       }
     )
     if (!comment[0]) throw new GeneralError('編輯留言失敗')
+    const updateComment = await Comment.findOne({
+      where: {
+        id: Number(commentId)
+      }
+    })
 
     res.status(200).json({
       ok: 1,
       message: '編輯留言成功',
-      statusCode: 200
+      statusCode: 200,
+      comment: updateComment
     })
   },
   editReply: async (req, res) => {

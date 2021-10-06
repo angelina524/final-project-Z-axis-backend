@@ -116,7 +116,7 @@ const checkGuestOrUserAuth = async (req, res, next) => {
   let userToken = null
   let guestToken = null
   if (req.headers.authorization) {
-    userToken = req.headers.authorization.replace('Bearer ', '')
+    userToken = req.headers.authorization.replace('Bearer', '').trim()
   }
   if (req.headers['guest-token']) {
     guestToken = req.headers['guest-token']
@@ -138,7 +138,7 @@ const checkGuestTokenOrUserId = async (req, res, next) => {
   let guestToken = null
 
   if (req.headers.authorization) {
-    userToken = req.headers.authorization.replace('Bearer ', '')
+    userToken = req.headers.authorization.replace('Bearer', '').trim()
   }
   if (req.headers['guest-token']) {
     guestToken = req.headers['guest-token']
