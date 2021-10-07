@@ -111,6 +111,53 @@ yarn start
 👤 **Didi** :octocat: Github: [@Didi](https://github.com/dadidi910)
 
 👤 **Allen** :octocat: Github: [@Allen](https://github.com/rockyooooooo)
+
+## File structure
+
+```
+📦 folder
+ ┣ 📂config
+ ┃ ┗ 📜config.json
+ ┣ 📂controllers
+ ┃ ┣ 📜comment.js
+ ┃ ┣ 📜guest.js
+ ┃ ┣ 📜issue.js
+ ┃ ┗ 📜user.js
+ ┣ 📂middlewares
+ ┃ ┣ 📜authority.js
+ ┃ ┗ 📜error.js
+ ┣ 📂migrations
+ ┃ ┣ 📜20210904064206-create-user.js
+ ┃ ┣ 📜20210904064230-create-issue.js
+ ┃ ┣ 📜20210904064252-create-comment.js
+ ┃ ┣ 📜20210904064303-create-guest.js
+ ┃ ┣ 📜20210906015832-add-associations.js
+ ┃ ┗ 📜20210923124728-create-guestsCommentsRelation.js
+ ┣ 📂models
+ ┃ ┣ 📜comment.js
+ ┃ ┣ 📜guest.js
+ ┃ ┣ 📜guestsCommentsRelation.js
+ ┃ ┣ 📜index.js
+ ┃ ┣ 📜issue.js
+ ┃ ┗ 📜user.js
+ ┣ 📂routes
+ ┃ ┣ 📜commentRouter.js
+ ┃ ┣ 📜guestRouter.js
+ ┃ ┣ 📜IssueRouter.js
+ ┃ ┗ 📜userRouter.js
+ ┣ 📂seeders
+ ┃ ┣ 📜20210927092412-user.js
+ ┃ ┣ 📜20210927114456-issue.js
+ ┃ ┣ 📜20210927123833-comment.js
+ ┃ ┗ 📜20210927131136-guest.js
+ ┣ 📂utils
+ ┃ ┗ 📜crypto.js
+ ┣ 📜.env
+ ┣ 📜.eslintrc.json
+ ┣ 📜.gitignore
+ ┣ 📜example.env
+ ┗ 📜index.js
+```
   
 
 > Give us a ⭐️ if you like this project!
