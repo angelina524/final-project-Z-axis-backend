@@ -20,6 +20,7 @@ const issueRouter = require('./routes/issueRouter')
 const userRouter = require('./routes/userRouter')
 const commentRouter = require('./routes/commentRouter')
 const guestRouter = require('./routes/guestRouter')
+const relationRouter = require('./routes/relationRouter')
 
 const result = dotenv.config()
 if (result.error) {
@@ -37,6 +38,7 @@ app.use('/users', userRouter)
 app.use('/issues', issueRouter)
 app.use('/issues/:issueId/comments', commentRouter)
 app.use('/guest', guestRouter)
+app.use('/relation', relationRouter)
 
 app.use(errorHandler)
 
