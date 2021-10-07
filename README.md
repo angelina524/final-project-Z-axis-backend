@@ -1,11 +1,11 @@
-<h1 align="center">Welcome to Z-axis 👋</h1>
+<h1 align="center">Welcome to Z-axis Backend👋</h1>
 
 <p>
   <img alt="Version" src="https://img.shields.io/badge/version-0.1.0-blue.svg?cacheSeconds=2592000" />
   <a href="https://www.notion.so/didijhong/Z-axis-User-Story-3f51e7514f114ac984b34b95aaeeb8fd" target="_blank">
     <img alt="User Story" src="https://img.shields.io/badge/User Story-yes-brightgreen.svg" />
   </a>
-  <a href="https://hackmd.io/LBJwuLekR_mO9pIdLfhSZQ" target="_blank">
+  <a href="https://hackmd.io/LBJwuLekR_mO9pIdLfhSZQ?view" target="_blank">
     <img alt="API Documentation" src="https://img.shields.io/badge/API Documentation-yes-brightgreen.svg" />
   </a>
   <a href="https://drawsql.app/z-axis/diagrams/z-axis-sql#" target="_blank">
