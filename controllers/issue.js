@@ -158,6 +158,70 @@ const issueController = {
       statusCode: 200
     })
   },
+
+  getOneIssueData: async (req, res) => {
+    const { issueURL } = req.params
+    const issueId = decrypt(issueURL)
+    const issueData = await Issue.findOne({
+      where: {
+        id: Number(issueId),
+        isDeleted: 0
+      },
+      include: [
+        {
+          model: Comment,
+          attributes: ['likesNum', 'reply', 'replyCreateAt', 'CreatedAt']
+        }
+      ]
+    })
+    const { beginDate, finishDate, Comments } = issueData
+    const addDays = (date, days) => {
+      const result = new Date(date)
+      result.setDate(result.getDate() + days)
+      return result
+    }
+
+    const data = []
+    const dateRange =
+      (new Date(finishDate).getTime() - new Date(beginDate).getTime()) /
+      86400000
+
+    for (let i = 0; i <= dateRange; i++) {
+      const currentDate = addDays(beginDate, i).toISOString().slice(0, 10)
+      data.push({
+        date: currentDate,
+        likes: Comments.reduce((acc, cur) => {
+          const createdAt = new Date(cur.dataValues.CreatedAt)
+            .toISOString()
+            .slice(0, 10)
+          if (createdAt !== currentDate) return acc
+          return acc + Number(cur.dataValues.likesNum)
+        }, 0),
+        comments: Comments.reduce((acc, cur) => {
+          const createdAt = new Date(cur.dataValues.CreatedAt)
+            .toISOString()
+            .slice(0, 10)
+          if (createdAt !== currentDate) return acc
+          return acc + 1
+        }, 0),
+        replies: Comments.reduce((acc, cur) => {
+          const createdAt = new Date(cur.dataValues.CreatedAt)
+            .toISOString()
+            .slice(0, 10)
+          if (createdAt !== currentDate) return acc
+          return acc + Number(!!cur.dataValues.replies)
+        }, 0)
+      })
+    }
+    if (!issueData) throw new NotFound('找不到這個提問箱')
+    res.status(200).json({
+      ok: 1,
+      issueData,
+      data,
+      statusCode: 200
+    })
+  },
+
   pinCommentOnTop: async (req, res) => {
     const { issueId } = req.params
     const { commentId } = req.body
@@ -189,6 +253,7 @@ const issueController = {
       statusCode: 200
     })
   },
+
   unpinCommentOnTop: async (req, res) => {
     const { issueId } = req.params
 

@@ -35,5 +35,9 @@ issueRouter.get(
   catchAsyncError(issueController.getAll)
 )
 issueRouter.get('/:issueURL', catchAsyncError(issueController.getOne))
+issueRouter.get(
+  '/data/:issueURL',
+  catchAsyncError(issueController.getOneIssueData)
+)
 
 module.exports = issueRouter
