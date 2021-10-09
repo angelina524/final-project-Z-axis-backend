@@ -216,7 +216,6 @@ const issueController = {
     if (!issueData) throw new NotFound('找不到這個提問箱')
     res.status(200).json({
       ok: 1,
-      issueData,
       data,
       statusCode: 200
     })
